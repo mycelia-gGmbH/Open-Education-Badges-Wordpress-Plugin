@@ -64,11 +64,33 @@ class Utils {
 		foreach($oeb_connections as $connection) {
 			$api_client = self::get_api_client($connection['id']);
 			foreach($connection['issuers'] as $issuer_slug) {
-				$badges = array_merge($badges, $api_client->get_badges($issuer_slug));
+				// $badges = array_merge($badges, $api_client->get_badges($issuer_slug));
+				$badges = array_merge($badges, CachedApiWrapper::api_request($api_client, 'get_badges', [$issuer_slug]));
 			}
 		}
 
 		return $badges;
+	}
+
+	public static function issue_by_badge($badge_slug, $users) {
+		$oeb_connections = get_option('oeb_connections');
+		foreach($oeb_connections as $connection) {
+			$api_client = self::get_api_client($connection['id']);
+			foreach($connection['issuers'] as $issuer_slug) {
+				// $badges = $api_client->get_badges($issuer_slug);
+				$badges = CachedApiWrapper::api_request($api_client, 'get_badges', [$issuer_slug]);
+				$target_badge = array_filter($badges, function($badge) use ($badge_slug) {
+					return $badge['slug'] == $badge_slug;
+				});
+				if (!empty($target_badge)) {
+					foreach($users as $user) {
+						$api_client->issue_badge($issuer_slug, $badge_slug, $user->user_email);
+						// var_export('issue: ' . var_export([$issuer_slug, $badge_slug, $user->user_email], true));
+					}
+					return;
+				}
+			}
+		}
 	}
 }
 

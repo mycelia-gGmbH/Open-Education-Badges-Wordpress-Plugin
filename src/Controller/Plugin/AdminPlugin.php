@@ -3,6 +3,7 @@
 namespace DisruptiveElements\OpenEducationBadges\Controller\Plugin;
 
 Use DisruptiveElements\OpenEducationBadges\Controller\Plugin;
+use DisruptiveElements\OpenEducationBadges\Util\CachedApiWrapper;
 Use DisruptiveElements\OpenEducationBadges\Util\Utils;
 
 class AdminPlugin {
@@ -16,8 +17,10 @@ class AdminPlugin {
 	}
 
 	public static function admin_init() {
+		// init option value
 		add_option('oeb_connections', [], '', false);
 
+		// handle oeb_connections save
 		if ($_GET['page'] == 'oeb_connections' && isset($_GET['create']) || isset($_GET['edit'])) {
 
 			$oeb_connection_id = $_GET['oeb_connection'] ?? '';
@@ -92,12 +95,36 @@ class AdminPlugin {
 				}
 			}
 		}
+
+		// handle oeb_issue action
+		if ($_GET['page'] == 'oeb_issue' && isset($_GET['badge'])) {
+			if (!empty($_POST['oeb_users'])) {
+
+				$users = get_users([
+					'include' => $_POST['oeb_users']
+				]);
+
+				Utils::issue_by_badge($_GET['badge'], $users);
+
+				wp_redirect(add_query_arg([
+						'page'=> $_GET['page'],
+					],
+					admin_url('admin.php')
+				));
+				exit();
+			}
+		}
 	}
 
 	public static function admin_menu() {
 		$slug = 'oeb_admin';
 		add_menu_page('Open Education Badges', 'Open Education Badges', 'manage_options', $slug, [static::class, 'page_oeb_admin']);
 		add_submenu_page($slug, 'OEB Verbindungen', 'Verbindungen', 'manage_options', 'oeb_connections', [static::class, 'page_oeb_connections']);
+		
+		$oeb_connections = get_option('oeb_connections');
+		if (!empty($oeb_connections)) {
+			add_submenu_page($slug, 'OEB Badge vergeben', 'Badge vergeben', 'manage_options', 'oeb_issue', [static::class, 'page_oeb_issue']);
+		}
 	}
 
 	public static function page_oeb_admin() {
@@ -125,14 +152,30 @@ class AdminPlugin {
 			$oeb_issuers = [];
 			if ($oeb_connection_id != '') {
 				$api_client = Utils::get_api_client($oeb_connection_id);
-				$oeb_issuers = $api_client->get_issuers();
+				$oeb_issuers = CachedApiWrapper::api_request($api_client, 'get_issuers');
 			}
 
 			include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_connections_edit.php';
 		} else {
 			include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_connections.php';
 		}
+	}
 
+	public static function page_oeb_issue() {
+		$oeb_page = 'oeb_issue';
+
+		$oeb_badges = Utils::get_all_badges();
+		$oeb_badge_slug = $_GET['badge'] ?? '';
+		$oeb_badge = array_filter($oeb_badges, function($badge) use($oeb_badge_slug) {
+			return $badge['slug'] == $oeb_badge_slug;
+		});
+		$oeb_badge = reset($oeb_badge);
+		if (isset($_GET['badge'])) {
+			$users = get_users();
+			include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_issue_badge.php';
+		} else {
+			include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_issue.php';
+		}
 	}
 }
 
