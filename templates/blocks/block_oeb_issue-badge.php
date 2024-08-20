@@ -48,6 +48,8 @@ $oeb_badge = reset($oeb_badge);
 			novalidate="novalidate"
 			>
 
+			<?php wp_nonce_field('oeb-issue-badge-'.$oeb_badge_slug); ?>
+
 			<select name="oeb_users[]" multiple>
 				<?php foreach($users as $user): ?>
 					<?php
@@ -66,13 +68,21 @@ $oeb_badge = reset($oeb_badge);
 	<?php else: ?>
 
 		<?php
-			$users = get_users([
-				'include' => $_POST['oeb_users']
-			]);
+			if (wp_verify_nonce($_REQUEST['_wpnonce'], 'oeb-issue-badge-'.$oeb_badge_slug)) {
+				$users = get_users([
+					'include' => $_POST['oeb_users']
+				]);
 
-			$result = Utils::issue_by_badge($oeb_badge_slug, $users);
+				$result = Utils::issue_by_badge($oeb_badge_slug, $users);
+				?>
+				<p>Badge zugewiesen</p>
+				<?php
+			} else {
+				?>
+				<p>Ein Fehler ist aufgetreten</p>
+				<?php
+			}
 		?>
-		<p>Badge zugewiesen</p>
 
 	<?php endif; ?>
 </div>
