@@ -23,14 +23,17 @@ class BlocksPlugin {
 		add_filter('block_categories_all', function($params_categories, $post) {
 			return array_merge(
 				$params_categories,
-				[[
-					'slug' => 'OpenEducationBadges',
-					'name' => 'Open Education Badges',
-				]]
+				[
+					[
+						'slug' => 'OpenEducationBadges',
+						'name' => 'Open Education Badges',
+					]
+				]
 			);
 		}, 10, 2);
 
 		self::register_block('issue-badge');
+		self::register_block('list-user-badges');
 
 		add_filter('request', [static::class, 'filter_request']);
 

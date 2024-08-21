@@ -92,5 +92,49 @@ class Utils {
 			}
 		}
 	}
+
+	public static function list_badges_by_email($email) {
+		$oeb_connections = get_option('oeb_connections');
+		$email_badge_ids = [];
+
+		foreach($oeb_connections as $connection) {
+
+			$api_client = self::get_api_client($connection['id']);
+			
+			// $api_issuers = $api_client->get_issuers();
+			$api_issuers = CachedApiWrapper::api_request($api_client, 'get_issuers', []);
+			$api_issuer_slugs = array_map(function($issuer) {
+				return $issuer['slug'];
+			}, $api_issuers);
+
+			foreach($connection['issuers'] as $issuer_slug) {
+
+				// skip when missing in api issuers
+				if (!in_array($issuer_slug, $api_issuer_slugs)) {
+					continue;
+				}
+
+				// $assertions = $api_client->get_assertions($issuer_slug);
+				$assertions = CachedApiWrapper::api_request($api_client, 'get_assertions', [$issuer_slug]);
+				foreach ($assertions as $assertion) {
+					if ($assertion['recipient_type'] == 'email' && $assertion['recipient_identifier'] == $email) {
+						$badge_id = preg_replace('(.*\/)', '', $assertion['badge_class']);
+						if (!in_array($badge_id, $email_badge_ids)) {
+							$email_badge_ids[] = $badge_id;
+						}
+					}
+				}
+			}
+		}
+
+		if (!empty($email_badge_ids)) {
+			$badges = self::get_all_badges();
+			return array_filter($badges, function($badge) use ($email_badge_ids) {
+				return in_array($badge['slug'], $email_badge_ids);
+			});
+		}
+
+		return [];
+	}
 }
 
