@@ -72,7 +72,7 @@ class Utils {
 		return $badges;
 	}
 
-	public static function issue_by_badge($badge_slug, $users) {
+	public static function issue_by_badge($badge_slug, $emails) {
 		$oeb_connections = get_option('oeb_connections');
 		foreach($oeb_connections as $connection) {
 			$api_client = self::get_api_client($connection['id']);
@@ -83,9 +83,9 @@ class Utils {
 					return $badge['slug'] == $badge_slug;
 				});
 				if (!empty($target_badge)) {
-					foreach($users as $user) {
-						$api_client->issue_badge($issuer_slug, $badge_slug, $user->user_email);
-						// var_export('issue: ' . var_export([$issuer_slug, $badge_slug, $user->user_email], true));
+					foreach($emails as $email) {
+						$api_client->issue_badge($issuer_slug, $badge_slug, $email);
+						// var_export('issue: ' . var_export([$issuer_slug, $badge_slug, $email], true));
 					}
 					return;
 				}
@@ -100,7 +100,7 @@ class Utils {
 		foreach($oeb_connections as $connection) {
 
 			$api_client = self::get_api_client($connection['id']);
-			
+
 			// $api_issuers = $api_client->get_issuers();
 			$api_issuers = CachedApiWrapper::api_request($api_client, 'get_issuers', []);
 			$api_issuer_slugs = array_map(function($issuer) {

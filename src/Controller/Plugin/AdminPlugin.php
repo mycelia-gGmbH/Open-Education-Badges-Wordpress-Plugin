@@ -100,13 +100,26 @@ class AdminPlugin {
 
 			// handle oeb_issue action
 			if ($_GET['page'] == 'oeb_issue' && isset($_GET['badge'])) {
-				if (!empty($_POST['oeb_users'])) {
+				if (!empty($_POST['oeb_users']) || !empty($_POST['oeb_emails'])) {
 
-					$users = get_users([
-						'include' => $_POST['oeb_users']
-					]);
+					$emails = [];
+					if (!empty($_POST['oeb_users'])) {
+						$users = get_users([
+							'include' => $_POST['oeb_users']
+						]);
+						$emails = array_merge($emails, array_map(function($user) { return $user->user_email; }, $users));
+					}
+					if (!empty($_POST['oeb_emails'])) {
+						$emails = array_merge($emails, array_filter(
+							preg_split("/[,;\s]/",$_POST['oeb_emails']),
+							function($email) {
+								// TODO e-mail validation?
+								return !empty($email);
+							}
+						));
+					}
 
-					Utils::issue_by_badge($_GET['badge'], $users);
+					Utils::issue_by_badge($_GET['badge'], $emails);
 
 					wp_redirect(add_query_arg([
 							'page'=> $_GET['page'],

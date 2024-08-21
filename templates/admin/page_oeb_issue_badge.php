@@ -18,17 +18,25 @@
 		novalidate="novalidate"
 		>
 
-		<select name="oeb_users[]" multiple>
-			<?php foreach($users as $user): ?>
-				<?php
-					$username = $user->user_email;
-					if (!empty($user->user_firstname) || !empty($user->user_lastname)) {
-						$username = $user->user_firstname . ' ' . $user->user_lastname . ' (' . $user->user_email . ')';
-					}
-				?>
-				<option value="<?= $user->ID ?>"><?= $username ?></option>
-			<?php endforeach; ?>
-		</select>
+		<div>
+			<label for="oeb_users">Wordpress-Benutzer</label><br>
+			<select name="oeb_users[]" multiple id="oeb_users">
+				<?php foreach($users as $user): ?>
+					<?php
+						$username = $user->user_email;
+						if (!empty($user->user_firstname) || !empty($user->user_lastname)) {
+							$username = $user->user_firstname . ' ' . $user->user_lastname . ' (' . $user->user_email . ')';
+						}
+					?>
+					<option value="<?= $user->ID ?>"><?= $username ?></option>
+				<?php endforeach; ?>
+			</select>
+		</div>
+
+		<div>
+			<label for="oeb_emails">E-Mail Freitexteingabe (Trennzeichen: ,; Leerzeichen)</label><br>
+			<textarea name="oeb_emails" id="oeb_emails"></textarea>
+		</div>
 
 		<p><input type="submit" name="save" value="Badge vergeben"></p>
 	</form>

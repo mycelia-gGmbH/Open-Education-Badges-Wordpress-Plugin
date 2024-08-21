@@ -31,7 +31,7 @@ $oeb_badge = reset($oeb_badge);
 			<?php endforeach; ?>
 		<?php endif; ?>
 
-	<?php elseif (!isset($_POST['oeb_users'])): ?>
+	<?php elseif (empty($_POST['oeb_users']) && empty($_POST['oeb_emails'])): ?>
 
 		<?php
 			$users = get_users();
@@ -50,17 +50,25 @@ $oeb_badge = reset($oeb_badge);
 
 			<?php wp_nonce_field('oeb-issue-badge-'.$oeb_badge_slug); ?>
 
-			<select name="oeb_users[]" multiple>
-				<?php foreach($users as $user): ?>
-					<?php
-						$username = $user->user_email;
-						if (!empty($user->user_firstname) || !empty($user->user_lastname)) {
-							$username = $user->user_firstname . ' ' . $user->user_lastname . ' (' . $user->user_email . ')';
-						}
-					?>
-					<option value="<?= $user->ID ?>"><?= $username ?></option>
-				<?php endforeach; ?>
-			</select>
+			<div>
+				<label for="oeb_users">Wordpress-Benutzer</label><br>
+				<select name="oeb_users[]" multiple id="oeb_users">
+					<?php foreach($users as $user): ?>
+						<?php
+							$username = $user->user_email;
+							if (!empty($user->user_firstname) || !empty($user->user_lastname)) {
+								$username = $user->user_firstname . ' ' . $user->user_lastname . ' (' . $user->user_email . ')';
+							}
+						?>
+						<option value="<?= $user->ID ?>"><?= $username ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+
+			<div>
+				<label for="oeb_emails">E-Mail Freitexteingabe (Trennzeichen: ,; Leerzeichen)</label><br>
+				<textarea name="oeb_emails" id="oeb_emails"></textarea>
+			</div>
 
 			<p><input type="submit" name="save" value="Badge vergeben"></p>
 		</form>
@@ -69,11 +77,26 @@ $oeb_badge = reset($oeb_badge);
 
 		<?php
 			if (wp_verify_nonce($_REQUEST['_wpnonce'], 'oeb-issue-badge-'.$oeb_badge_slug)) {
-				$users = get_users([
-					'include' => $_POST['oeb_users']
-				]);
 
-				$result = Utils::issue_by_badge($oeb_badge_slug, $users);
+				$emails = [];
+				if (!empty($_POST['oeb_users'])) {
+					$users = get_users([
+						'include' => $_POST['oeb_users']
+					]);
+					$emails = array_merge($emails, array_map(function($user) { return $user->user_email; }, $users));
+				}
+				if (!empty($_POST['oeb_emails'])) {
+					$emails = array_merge($emails, array_filter(
+						preg_split("/[,;\s]/",$_POST['oeb_emails']),
+						function($email) {
+							// TODO e-mail validation?
+							return !empty($email);
+						}
+					));
+				}
+
+				Utils::issue_by_badge($_GET['badge'], $emails);
+
 				?>
 				<p>Badge zugewiesen</p>
 				<?php
