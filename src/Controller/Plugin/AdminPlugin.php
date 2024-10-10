@@ -19,6 +19,7 @@ class AdminPlugin {
 	public static function admin_init() {
 		// init option value
 		add_option('oeb_connections', [], '', false);
+		add_option('oeb_settings', [], '', false);
 
 		if (is_admin() && isset($_GET['page'])) {
 
@@ -129,12 +130,22 @@ class AdminPlugin {
 					exit();
 				}
 			}
+
+			if ($_GET['page'] == 'oeb_settings') {
+
+				$oeb_settings = get_option('oeb_settings');
+				if (isset($_POST['loglevel'])) {
+					$oeb_settings['loglevel'] = $_POST['loglevel'];
+				}
+				update_option('oeb_settings', $oeb_settings);
+			}
 		}
 	}
 
 	public static function admin_menu() {
 		$slug = 'oeb_admin';
 		add_menu_page('Open Education Badges', 'Open Education Badges', 'manage_options', $slug, [static::class, 'page_oeb_admin']);
+		add_submenu_page($slug, 'OEB Einstellungen', 'Einstellungen', 'manage_options', 'oeb_settings', [static::class, 'page_oeb_settings']);
 		add_submenu_page($slug, 'OEB Verbindungen', 'Verbindungen', 'manage_options', 'oeb_connections', [static::class, 'page_oeb_connections']);
 		
 		$oeb_connections = get_option('oeb_connections');
@@ -148,6 +159,12 @@ class AdminPlugin {
 		$oeb_connections = get_option('oeb_connections');
 		$oeb_badges = Utils::get_all_badges();
 		include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_admin.php';
+	}
+
+	public static function page_oeb_settings() {
+		$oeb_page = 'oeb_settings';
+		$oeb_settings = get_option('oeb_settings');
+		include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_settings.php';
 	}
 
 	public static function page_oeb_connections() {

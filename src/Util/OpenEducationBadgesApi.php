@@ -14,6 +14,8 @@ class OpenEducationBadgesApi {
 
 	private $store_token;
 	private $retrieve_token;
+	private $logfunc;
+	private $loglevel = 'error';
 
 	public function __construct(
 			string $client_id = "",
@@ -32,6 +34,13 @@ class OpenEducationBadgesApi {
 		$this->password = $password;
 		$this->store_token = $store_token ?? [$this, 'store_token_default'];
 		$this->retrieve_token = $retrieve_token ?? [$this, 'retrieve_token_default'];
+
+		$settings = get_option('oeb_settings');
+		if (!empty($settings) && !empty($settings['loglevel'])) {
+			$this->loglevel = $settings['loglevel'];
+		} else {
+			$this->loglevel = 'error';
+		}
 	}
 
 	public function set_store_token (callable $store_token) {
@@ -42,20 +51,44 @@ class OpenEducationBadgesApi {
 		$this->retrieve_token = $retrieve_token;
 	}
 
-	public static function log($msg, $level = 'error') {
-		// if (empty(self::$logger)) {
-		// 	self::$logger = wc_get_logger();
-		// }
+	public function set_log(callable $log) {
+		$this->logfunc = $log;
+	}
 
-		// self::$logger->log(
-		// 	$level,
-		// 	$msg,
-		// 	[
-		// 		'source' => $source
-		// 	]
-		// );
+	public function log($msg, $level = 'error') {
 
-		// var_export(['log', $level, $msg]);
+		if ($this->loglevel == 'error') {
+			if ($level == 'info' || $level == 'debug') {
+				return false;
+			}
+		}
+		if ($this->loglevel == 'info') {
+			if ($level == 'debug') {
+				return false;
+			}
+		}
+
+		if ($this->logfunc) {
+			call_user_func($this->logfunc, $this, $msg, $level);
+		} else {
+			// default logging
+			if (function_exists('wc_get_logger')) {
+				$logger = wc_get_logger();
+				$logger->log(
+					$level,
+					$msg,
+					[
+						'source' => 'OpenEducationBadges'
+					]
+				);
+			} else {
+				if (!is_dir(WP_CONTENT_DIR.'/OpenEducationBadges')) {
+					mkdir(WP_CONTENT_DIR.'/OpenEducationBadges');
+			  	}
+				$current_file = date('Y-m-d').'.log';
+				file_put_contents(WP_CONTENT_DIR.'/OpenEducationBadges/'.$current_file, "$level: $msg\n", FILE_APPEND | LOCK_EX);
+			}
+		}
 	}
 
 	private function store_token_default($token) {
@@ -173,7 +206,7 @@ class OpenEducationBadgesApi {
 		}
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-		self::log(
+		$this->log(
 			'Request: ' . var_export(
 				[
 					'url'=>$url,
@@ -182,17 +215,19 @@ class OpenEducationBadgesApi {
 				],
 				true
 			),
-			'info'
+			'debug'
 		);
 
 		$response = curl_exec($ch);
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 
-		self::log('Response: ' . var_export(
-			$response,
-			'info'
-		));
+		$this->log('Response: ' . var_export(
+				$response,
+				true
+			),
+			'debug'
+		);
 
 		// decode response available
 		if (!empty($response)) {
@@ -204,7 +239,7 @@ class OpenEducationBadgesApi {
 			return $response;
 
 		} else {
-			self::log(
+			$this->log(
 				'API Error: ' . var_export(
 					[
 						'response' => $response,
