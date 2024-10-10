@@ -6,6 +6,7 @@
 	<h1 class="wp-heading-inline">
 		Badge vergeben
 	</h1>
+	<div><a href="<?= $url_page ?>">Zurück zur Badge-Auswahl</a></div>
 
 	<img src="<?= $oeb_badge['image'] ?>" width="120">
 	<p><?= $oeb_badge['name'] ?></p>

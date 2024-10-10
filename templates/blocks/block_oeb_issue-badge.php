@@ -33,6 +33,8 @@ $oeb_badge = reset($oeb_badge);
 
 	<?php elseif (empty($_POST['oeb_users']) && empty($_POST['oeb_emails'])): ?>
 
+		<div><a href="./">Zurück zur Badge-Auswahl</a></div>
+
 		<?php
 			$users = get_users();
 		?>
