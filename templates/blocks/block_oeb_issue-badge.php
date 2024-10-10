@@ -110,7 +110,7 @@ $oeb_badge = reset($oeb_badge);
 					));
 				}
 
-				Utils::issue_by_badge($_GET['badge'], $emails);
+				Utils::issue_by_badge($_GET['oeb_badge'], $emails);
 
 				?>
 				<p>Badge zugewiesen</p>
