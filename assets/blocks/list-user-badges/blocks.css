@@ -69,21 +69,3 @@
 		grid-template-columns: 1fr;
 	}
 }
-
-/**
-* Only for the demonstration purposes.
-* To be removed!
-*/
-@media (max-width: 1024px) {
-	.has-sidebar .content-container {
-		display: grid;
-		grid-template-columns: 5fr 2fr;
-		grid-gap: var(--global-xl-spacing);
-		justify-content: center;
-	}
-	#secondary {
-		grid-column: 2;
-		grid-row: 1;
-		min-width: 0;
-	}
-}
