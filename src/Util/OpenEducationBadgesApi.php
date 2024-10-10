@@ -327,6 +327,20 @@ class OpenEducationBadgesApi {
 			"recipient_type" => "email"
 		]);
 
+		if (!empty($response)) {
+			$this->log(
+				'Issued Badge: ' . var_export(
+					[
+						'issuer' => $issuer,
+						'badge' => $badge,
+						'recipient' => $recipient
+					],
+					true
+				),
+				'info'
+			);
+		}
+
 		return $response;
 	}
 
