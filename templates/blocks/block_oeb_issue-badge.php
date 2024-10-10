@@ -15,32 +15,46 @@ $oeb_badge = reset($oeb_badge);
 ?>
 
 <div class="oeb-issue-badge">
-	<h3>Badge vergeben</h3>
-
 	<?php if (!isset($_GET['oeb_issue']) || empty($oeb_badge_slug)): ?>
 
 		<?php if (empty($oeb_badges)): ?>
 			<p>Keine Badges verfügbar</p>
 		<?php else: ?>
-			<p><strong>Bitte einen Badge wählen:</strong></p>
+			<p class="oeb-issue-badge__cta"><strong>Bitte einen Badge wählen:</strong></p>
 
-			<?php foreach($oeb_badges as $badge): ?>
-				<a href="?oeb_issue&oeb_badge=<?= $badge['slug'] ?>" style="display: inline-block;"><img src="<?= $badge['image'] ?>" width="96">
-				<p><?= $badge['name'] ?></p>
-			</a>
-			<?php endforeach; ?>
+			<div class="oeb-badgelist">
+				<?php foreach($oeb_badges as $badge): ?>
+					<a href="?oeb_issue&oeb_badge=<?= $badge['slug'] ?>" class="oeb-badgelist__item">
+						<div class="oeb-badgelist__image">
+							<img src="<?= $badge['image'] ?>" width="96" title="<?= $badge['name'] ?>"  alt="<?= $badge['name'] ?>">
+						</div>
+
+						<div class="oeb-badgelist__title">
+							<p><?= $badge['name'] ?></p>
+						</div>
+					</a>
+				<?php endforeach; ?>
+			</div>
+
 		<?php endif; ?>
 
 	<?php elseif (empty($_POST['oeb_users']) && empty($_POST['oeb_emails'])): ?>
 
 		<div><a href="./">Zurück zur Badge-Auswahl</a></div>
 
-		<?php
-			$users = get_users();
-		?>
+		<div class="oeb-issue-badge__chosen">
+			<?php
+				$users = get_users();
+			?>
 
-		<img src="<?= $oeb_badge['image'] ?>" width="120">
-		<p><?= $oeb_badge['name'] ?></p>
+			<div class="oeb-badgelist__image">
+				<img src="<?= $oeb_badge['image'] ?>" width="120" title="<?= $badge['name'] ?>" alt="<?= $badge['name'] ?>">
+			</div>
+
+			<div class="oeb-badgelist__title">
+				<p><?= $oeb_badge['name'] ?></p>
+			</div>
+		</div>
 
 		<form
 			method="post"
@@ -52,8 +66,8 @@ $oeb_badge = reset($oeb_badge);
 
 			<?php wp_nonce_field('oeb-issue-badge-'.$oeb_badge_slug); ?>
 
-			<div>
-				<label for="oeb_users">Wordpress-Benutzer</label><br>
+			<div class="oeb-issue-badge__users">
+				<label for="oeb_users">Wordpress-Benutzer</label>
 				<select name="oeb_users[]" multiple id="oeb_users">
 					<?php foreach($users as $user): ?>
 						<?php
@@ -67,8 +81,8 @@ $oeb_badge = reset($oeb_badge);
 				</select>
 			</div>
 
-			<div>
-				<label for="oeb_emails">E-Mail Freitexteingabe (Trennzeichen: ,; Leerzeichen)</label><br>
+			<div class="oeb-issue-badge__emails">
+				<label for="oeb_emails">E-Mail Freitexteingabe (Trennzeichen: ,; Leerzeichen)</label>
 				<textarea name="oeb_emails" id="oeb_emails"></textarea>
 			</div>
 
@@ -91,8 +105,7 @@ $oeb_badge = reset($oeb_badge);
 					$emails = array_merge($emails, array_filter(
 						preg_split("/[,;\s]/",$_POST['oeb_emails']),
 						function($email) {
-							// TODO e-mail validation?
-							return !empty($email);
+							return filter_var($email, FILTER_VALIDATE_EMAIL);
 						}
 					));
 				}

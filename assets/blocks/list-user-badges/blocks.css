@@ -1,0 +1,89 @@
+/**
+* Minimal Style for List of User Badges
+*/
+
+.oeb-badgelist {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 24px;
+}
+
+.oeb-badgelist__item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+}
+
+.oeb-badgelist__image {
+	flex-shrink: 0;
+}
+
+.oeb-badgelist__title {
+	text-align: center;
+	max-width: 200px;
+}
+
+@media (max-width: 992px) {
+	.oeb-badgelist {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (max-width: 768px) {
+	.oeb-badgelist {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 576px) {
+	.oeb-badgelist {
+		grid-template-columns: 1fr;
+	}
+
+	.oeb-badgelist__item {
+		flex-direction: row;
+	}
+
+	.oeb-badgelist__title {
+		text-align: left;
+	}
+}
+
+/**
+* Minimal Style for Sidebar use
+*/
+.sidebar-inner-wrap .oeb-badgelist {
+	grid-template-columns: repeat(2, 1fr);
+	gap: 8px;
+}
+.sidebar-inner-wrap .oeb-badgelist__image {
+	flex-shrink: 1;
+}
+.sidebar-inner-wrap .oeb-badgelist__title {
+	display: none;
+}
+
+@media (max-width: 768px) {
+	.sidebar-inner-wrap .oeb-badgelist {
+		grid-template-columns: 1fr;
+	}
+}
+
+/**
+* Only for the demonstration purposes.
+* To be removed!
+*/
+@media (max-width: 1024px) {
+	.has-sidebar .content-container {
+		display: grid;
+		grid-template-columns: 5fr 2fr;
+		grid-gap: var(--global-xl-spacing);
+		justify-content: center;
+	}
+	#secondary {
+		grid-column: 2;
+		grid-row: 1;
+		min-width: 0;
+	}
+}

@@ -1,0 +1,63 @@
+/**
+* Minimal Style for Issuing Badges
+*/
+
+.oeb-issue-badge .oeb-badgelist {
+	grid-template-columns: repeat(6, 1fr);
+}
+
+.oeb-issue-badge .oeb-issue-badge__chosen {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 24px;
+	margin-bottom: 24px;
+}
+
+.oeb-issue-badge .oeb-issue-badge__emails,
+.oeb-issue-badge .oeb-issue-badge__users {
+	margin-bottom: 24px;
+}
+.oeb-issue-badge .oeb-issue-badge__emails label,
+.oeb-issue-badge .oeb-issue-badge__users label {
+	display: block;
+	margin-bottom: 12px;
+}
+.oeb-issue-badge .oeb-issue-badge__users select {
+	width: 100%;
+	max-width: 600px;
+	height: 300px;
+}
+.oeb-issue-badge .oeb-issue-badge__emails textarea {
+	width: 100%;
+	max-width: 600px;
+	height: 150px;
+}
+
+@media (max-width: 992px) {
+	.oeb-issue-badge .oeb-badgelist {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+@media (max-width: 768px) {
+	.oeb-issue-badge .oeb-badgelist {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (max-width: 576px) {
+	.oeb-issue-badge .oeb-badgelist {
+		grid-template-columns: 1fr;
+	}
+	.oeb-issue-badge .oeb-issue-badge__chosen {
+		gap: 12px;
+	}
+}
+
+/**
+* Minimal Style for Sidebar use
+*/
+.sidebar-inner-wrap .oeb-issue-badge__cta {
+	text-align: center;
+}

@@ -61,6 +61,8 @@ class BlocksPlugin {
 			],
 			filemtime("$asset_path/editor.js")
 		);
+
+		wp_enqueue_style("oeb-$block_name-style", "$asset_url/blocks.css");
 	}
 
 	public static function render_block($attributes, $content, $block) {

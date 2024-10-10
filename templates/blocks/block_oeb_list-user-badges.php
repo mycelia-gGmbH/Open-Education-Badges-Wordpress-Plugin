@@ -7,14 +7,18 @@ if (!empty($user)):
 	if (!empty($badges)):
 ?>
 
-<div>
-		<h3>Erhaltene Badges</h3>
-		<?php foreach($badges as $badge): ?>
-			<div>
-				<img src="<?= $badge['image'] ?>" width="120">
+<div class="oeb-badgelist">
+	<?php foreach($badges as $badge): ?>
+		<div class="oeb-badgelist__item">
+			<div class="oeb-badgelist__image">
+				<img src="<?= $badge['image'] ?>" width="120" title="<?= $badge['name'] ?>"  alt="<?= $badge['name'] ?>">
+			</div>
+
+			<div class="oeb-badgelist__title">
 				<p><?= $badge['name'] ?></p>
 			</div>
-		<?php endforeach; ?>
+		</div>
+	<?php endforeach; ?>
 </div>
 
 	<?php endif; ?>
