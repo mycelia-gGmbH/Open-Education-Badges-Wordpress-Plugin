@@ -33,6 +33,9 @@ class Badge extends ApiObject {
 		$this->category = $api_data['extensions']['extensions:CategoryExtension']['Category'] === 'competency' ? 'Kompetenz- Badge' : 'Teilnahme- Badge';
 
 		$this->competencies = $api_data['extensions']['extensions:CompetencyExtension'];
+		foreach($this->competencies as &$competency) {
+			$competency['category'] = $competency['category'] == 'skill' ? 'Fähigkeit' : 'Wissen';
+		}
 	}
 
 	public function get_assertions() {

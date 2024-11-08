@@ -90,13 +90,35 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 						<p><?= nl2br($badge->description) ?></p>
 						<h3>Kriterien</h3>
 						<p><?= nl2br($badge->api_data['criteriaNarrative']) ?></p>
-						<p><strong>Url:</strong> <a target="_blank" href="<?= $badge->api_data['criteriaUrl'] ?>"><?= $badge->api_data['criteriaUrl'] ?></a></p>
+						<?php if (!empty($badge->api_data['criteriaUrl'])): ?>
+							<p><strong>Url:</strong> <a target="_blank" href="<?= $badge->api_data['criteriaUrl'] ?>"><?= $badge->api_data['criteriaUrl'] ?></a></p>
+						<?php endif; ?>
 						<?php if (!empty($badge->api_data['alignment'])): ?>
 							<h3>Alignment</h3>
 							<?php foreach($badge->api_data['alignment'] as $alignment): ?>
 								<pre><?= var_export($alignment, true) ?></pre>
 							<?php endforeach; ?>
 						<?php endif; ?>
+
+						<?php if (!empty($badge->competencies)): ?>
+							<h3>Kompetenzen</h3>
+							<table class="widefat">
+							<?php foreach($badge->competencies as $competency): ?>
+								<tr>
+									<td>
+										<strong><?= $competency['name'] ?></strong>
+										<br><?= $competency['category'] ?>
+										<br>Dauer: <?= $competency['studyLoad'] ?> min
+									</td>
+									<td>
+										<?= $competency['description'] ?>
+										
+									</td>
+								</tr>
+							<?php endforeach; ?>
+							</table>
+						<?php endif; ?>
+
 
 						<?php if (!empty($oeb_badge_assertions)): ?>
 							<br><h3><?= count($oeb_badge_assertions) ?> Empfänger:innen</h3>
