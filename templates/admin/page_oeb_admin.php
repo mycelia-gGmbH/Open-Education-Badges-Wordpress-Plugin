@@ -3,7 +3,7 @@
 use DisruptiveElements\OpenEducationBadges\Util\Utils;
 
 	$url_page = '?page='. $oeb_page;
-	$url_create =  add_query_arg([
+	$url_create_connection =  add_query_arg([
 			'create' => '',
 			'page'=> 'oeb_connections'
 		],
@@ -53,10 +53,20 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 				$badge = reset($badges);
 				if (!empty($badge)):
 
+					$url_create_assertion = add_query_arg([
+						'badge' => $badge->id,
+						'page'=> 'oeb_issue'
+					],
+					admin_url('admin.php')
+				);
+
 					$issuer = Utils::array_find($oeb_issuers, function($issuer) use ($badge) { return $issuer->id == $badge->issuer_id; });
 
 					?>
-				<br><br><a class="button" href="<?= $url_page ?>">Zurück zur Übersicht</a><br>
+				<br><br>
+				<a class="button" href="<?= $url_page ?>">Zurück zur Übersicht</a>
+				<a class="button" href="<?= $url_create_assertion ?>">Badge vergeben</a>
+				<br>
 				<div class="oeb-badgedetails postbox">
 					<div class="oeb-badgedetails__left">
 						<figure><img src="<?= $badge->image ?>" width="256"></figure>
@@ -156,6 +166,6 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 
 	<?php else: ?>
 		<p><strong>Bisher keine Verbindungen eingerichtet.</strong><p>
-		<p><a href="<?= $url_create ?>">Verbindung anlegen</a><p>
+		<p><a href="<?= $url_create_connection ?>">Verbindung anlegen</a><p>
 	<?php endif; ?>
 </div>

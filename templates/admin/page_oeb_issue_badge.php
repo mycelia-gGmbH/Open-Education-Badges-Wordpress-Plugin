@@ -6,9 +6,10 @@
 	<h1 class="wp-heading-inline">
 		Badge vergeben
 	</h1>
+	<br><br>
+	<div><a class="button" href="<?= $url_page ?>">Zurück zur Badge-Auswahl</a></div>
 
-	<div class="oeb-issue-badge">
-		<div><a href="<?= $url_page ?>">Zurück zur Badge-Auswahl</a></div>
+	<div class="oeb-issue-badge postbox" style="padding: 0 12px 12px;">
 
 		<div class="oeb-issue-badge__chosen">
 			<div class="oeb-badgelist__image">
@@ -28,25 +29,32 @@
 			novalidate="novalidate"
 			>
 
-			<div class="oeb-issue-badge__users">
-				<label for="oeb_users">Wordpress-Benutzer</label>
-				<select name="oeb_users[]" multiple id="oeb_users">
-					<?php foreach($users as $user): ?>
-						<?php
-							$username = $user->user_email;
-							if (!empty($user->user_firstname) || !empty($user->user_lastname)) {
-								$username = $user->user_firstname . ' ' . $user->user_lastname . ' (' . $user->user_email . ')';
-							}
-						?>
-						<option value="<?= $user->ID ?>"><?= $username ?></option>
-					<?php endforeach; ?>
-				</select>
-			</div>
+			<table class="form-table">
 
-			<div class="oeb-issue-badge__emails">
-				<label for="oeb_emails">E-Mail Freitexteingabe (Trennzeichen: ,; Leerzeichen)</label>
-				<textarea name="oeb_emails" id="oeb_emails"></textarea>
-			</div>
+					<tr class="oeb-issue-badge__users">
+						<th><label for="oeb_users">Wordpress-Benutzer</label></th>
+						<td>
+							<select name="oeb_users[]" multiple id="oeb_users">
+								<?php foreach($users as $user): ?>
+									<?php
+										$username = $user->user_email;
+										if (!empty($user->user_firstname) || !empty($user->user_lastname)) {
+											$username = $user->user_firstname . ' ' . $user->user_lastname . ' (' . $user->user_email . ')';
+										}
+									?>
+									<option value="<?= $user->ID ?>"><?= $username ?></option>
+								<?php endforeach; ?>
+							</select>
+						</td>
+					</tr>
+					<tr class="oeb-issue-badge__emails">
+						<th><label for="oeb_emails">E-Mail Freitexteingabe</label></th>
+						<td>
+							<textarea name="oeb_emails" id="oeb_emails"></textarea>
+							<br>(Trennzeichen: ,; Leerzeichen)
+						</td>
+					</tr>
+			</table>
 
 			<p><input type="submit" name="save" value="Badge vergeben"></p>
 		</form>

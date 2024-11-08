@@ -34,7 +34,7 @@
 .oeb-issue-badge .oeb-issue-badge__emails textarea {
 	width: 100%;
 	max-width: 600px;
-	height: 150px;
+	height: 60px;
 }
 
 @media (max-width: 992px) {
