@@ -1,0 +1,6 @@
+@use 'backend/badgeslist';
+@use 'backend/badgedetails';
+@use 'backend/tags';
+
+// fixme temporary
+.notice.notice-warning { display: none; }
