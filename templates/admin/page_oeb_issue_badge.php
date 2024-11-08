@@ -12,11 +12,11 @@
 
 		<div class="oeb-issue-badge__chosen">
 			<div class="oeb-badgelist__image">
-				<img src="<?= $oeb_badge['image'] ?>" width="120" title="<?= $badge['name'] ?>" alt="<?= $badge['name'] ?>">
+				<img src="<?= $oeb_badge->image ?>" width="120" title="<?= $badge->name ?>" alt="<?= $badge->name ?>">
 			</div>
 
 			<div class="oeb-badgelist__title">
-				<p><?= $oeb_badge['name'] ?></p>
+				<p><?= $oeb_badge->name ?></p>
 			</div>
 		</div>
 

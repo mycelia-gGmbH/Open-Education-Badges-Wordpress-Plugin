@@ -35,6 +35,16 @@
 					</p>
 				</td>
 			</tr>
+			<tr>
+				<th><label for="form-oeb-caching">Cache-Timeout</label></th>
+				<td>
+					<input type="number" value="<?= $oeb_settings['cache_timeout'] ?>" name="cache_timeout" maxlength="4" style="width:60px;"> Sekunden
+					<p class="description">
+						Antworten der OEB Server werden für die angegebene Zeit zwischengespeichert, um die Geschwindigkeit der Seite zu verbessern.<br>
+						Default: 60 Sekunden
+					</p>
+				</td>
+			</tr>
 		</table>
 
 		<p class="submit">

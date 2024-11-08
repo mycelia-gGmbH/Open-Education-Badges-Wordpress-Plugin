@@ -12,7 +12,11 @@ class CachedApiWrapper {
 
 		if (empty($result)) {
 			$result = call_user_func([$api_client, $function_name], ...$parameters);
-			set_transient($transient_key, $result, 600);
+
+			$oeb_settings = get_option('oeb_settings');
+			if (empty($oeb_settings['cache_timeout'])) { $oeb_settings['cache_timeout'] = '60'; }
+
+			set_transient($transient_key, $result, intval($oeb_settings['cache_timeout']));
 		}
 
 		return $result;

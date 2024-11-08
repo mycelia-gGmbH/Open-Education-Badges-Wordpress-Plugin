@@ -30,13 +30,14 @@
 	display: flex;
 	gap: 24px;
 	margin-top: 24px;
+	align-items: flex-start;
 }
 
 .oeb-badgedetails__left {
 	background-color: #eafdeb;
 	border-radius: 24px;
 	margin:12px 24px;
-	padding: 24px 12px;
+	padding: 24px 12px 40px;
 	max-width: 300px;
 }
 
@@ -71,6 +72,8 @@
 
 .oeb-badgedetails__right {
 	max-width: 600px;
+	padding-top: 16px;
+	padding-bottom: 32px;
 }
 
 .oeb-tags {
@@ -80,9 +83,10 @@
 	row-gap: 2px;
 }
 .oeb-tags li {
-	border: 2px solid #999;
+	border: 1px solid #492e98;
 	border-radius: 24px;
-	padding: 4px 12px;
+	padding: 8px 16px;
+	background-color: white;
 }
 
 

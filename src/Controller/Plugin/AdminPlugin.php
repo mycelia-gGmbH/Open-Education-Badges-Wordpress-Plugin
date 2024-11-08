@@ -138,8 +138,13 @@ class AdminPlugin {
 			if ($_GET['page'] == 'oeb_settings') {
 
 				$oeb_settings = get_option('oeb_settings');
+				if (empty($oeb_settings['cache_timeout'])) { $oeb_settings['cache_timeout'] = '60'; }
+
 				if (isset($_POST['loglevel'])) {
 					$oeb_settings['loglevel'] = $_POST['loglevel'];
+				}
+				if (isset($_POST['cache_timeout'])) {
+					$oeb_settings['cache_timeout'] = $_POST['cache_timeout'];
 				}
 				update_option('oeb_settings', $oeb_settings);
 			}
@@ -164,7 +169,8 @@ class AdminPlugin {
 
 		$oeb_issuers = Utils::get_issuers();
 		$oeb_badge_objects = Utils::get_all_badges();
-		$oeb_badges = array_map(function(Badge $b) { return $b->api_data; }, $oeb_badge_objects);
+		// $oeb_badges = array_map(function(Badge $b) { return $b->api_data; }, $oeb_badge_objects);
+		$oeb_badges = $oeb_badge_objects;
 		$oeb_badge_entity_id = $_GET['badge'] ?? '';
 		if (!empty($oeb_badge_entity_id)) {
 			$oeb_badge_object = Utils::array_find($oeb_badge_objects, function($badge) use ($oeb_badge_entity_id) { return $badge->id == $oeb_badge_entity_id; });
@@ -213,10 +219,9 @@ class AdminPlugin {
 
 		$oeb_badges = Utils::get_all_badges();
 		$oeb_badge_entity_id = $_GET['badge'] ?? '';
-		$oeb_badge = array_filter($oeb_badges, function($badge) use($oeb_badge_entity_id) {
-			return $badge['entityId'] == $oeb_badge_entity_id;
+		$oeb_badge = Utils::array_find($oeb_badges, function($badge) use($oeb_badge_entity_id) {
+			return $badge->id == $oeb_badge_entity_id;
 		});
-		$oeb_badge = reset($oeb_badge);
 		if (isset($_GET['badge'])) {
 			$users = get_users();
 			include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_issue_badge.php';

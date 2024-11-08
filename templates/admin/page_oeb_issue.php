@@ -13,18 +13,18 @@
 		<div class="oeb-badgelist">
 			<?php foreach($oeb_badges as $badge): ?>
 				<a href="<?= add_query_arg([
-					'badge' => $badge['entityId'],
+					'badge' => $badge->id,
 					'page'=> $oeb_page
 				],
 				admin_url('admin.php')
 			) ?>"  class="oeb-badgelist__item">
 
 				<div class="oeb-badgelist__image">
-					<img src="<?= $badge['image'] ?>" width="96" title="<?= $badge['name'] ?>"  alt="<?= $badge['name'] ?>">
+					<img src="<?= $badge->image ?>" width="96" title="<?= $badge->name ?>"  alt="<?= $badge->name ?>">
 				</div>
 
 				<div class="oeb-badgelist__title">
-					<p><?= $badge['name'] ?></p>
+					<p><?= $badge->name ?></p>
 				</div>
 			</a>
 			<?php endforeach; ?>
