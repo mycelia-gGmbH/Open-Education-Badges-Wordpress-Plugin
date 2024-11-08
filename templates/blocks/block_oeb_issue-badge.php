@@ -6,16 +6,16 @@ if (!current_user_can('oeb_issue') && !current_user_can('manage_options')) {
 }
 
 $oeb_badges = Utils::get_all_badges();
-$oeb_badge_slug = $_GET['oeb_badge'] ?? '';
-$oeb_badge = array_filter($oeb_badges, function($badge) use($oeb_badge_slug) {
-	return $badge['slug'] == $oeb_badge_slug;
+$oeb_badge_entity_id = $_GET['oeb_badge'] ?? '';
+$oeb_badge = array_filter($oeb_badges, function($badge) use($oeb_badge_entity_id) {
+	return $badge['entityId'] == $oeb_badge_entity_id;
 });
 $oeb_badge = reset($oeb_badge);
 
 ?>
 
 <div class="oeb-issue-badge">
-	<?php if (!isset($_GET['oeb_issue']) || empty($oeb_badge_slug)): ?>
+	<?php if (!isset($_GET['oeb_issue']) || empty($oeb_badge_entity_id)): ?>
 
 		<?php if (empty($oeb_badges)): ?>
 			<p>Keine Badges verfügbar</p>
@@ -24,7 +24,7 @@ $oeb_badge = reset($oeb_badge);
 
 			<div class="oeb-badgelist">
 				<?php foreach($oeb_badges as $badge): ?>
-					<a href="?oeb_issue&oeb_badge=<?= $badge['slug'] ?>" class="oeb-badgelist__item">
+					<a href="?oeb_issue&oeb_badge=<?= $badge['entityId'] ?>" class="oeb-badgelist__item">
 						<div class="oeb-badgelist__image">
 							<img src="<?= $badge['image'] ?>" width="96" title="<?= $badge['name'] ?>"  alt="<?= $badge['name'] ?>">
 						</div>
@@ -64,7 +64,7 @@ $oeb_badge = reset($oeb_badge);
 			novalidate="novalidate"
 			>
 
-			<?php wp_nonce_field('oeb-issue-badge-'.$oeb_badge_slug); ?>
+			<?php wp_nonce_field('oeb-issue-badge-'.$oeb_badge_entity_id); ?>
 
 			<div class="oeb-issue-badge__users">
 				<label for="oeb_users">Wordpress-Benutzer</label>
@@ -92,7 +92,7 @@ $oeb_badge = reset($oeb_badge);
 	<?php else: ?>
 
 		<?php
-			if (wp_verify_nonce($_REQUEST['_wpnonce'], 'oeb-issue-badge-'.$oeb_badge_slug)) {
+			if (wp_verify_nonce($_REQUEST['_wpnonce'], 'oeb-issue-badge-'.$oeb_badge_entity_id)) {
 
 				$emails = [];
 				if (!empty($_POST['oeb_users'])) {

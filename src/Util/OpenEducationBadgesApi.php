@@ -306,13 +306,23 @@ class OpenEducationBadgesApi {
 	}
 
 	public function get_issuers() {
-		$response = $this->get("v1/issuer/issuers", []);
-		return $response;
+		// $response = $this->get("v1/issuer/issuers", []);
+		// return $response;
+		$response = $this->get("v2/issuers", []);
+		if ($response['status']['success']) {
+			return $response['result'];
+		}
+		return false;
 	}
 
 	public function get_badges($issuer) {
-		$response = $this->get("v1/issuer/issuers/$issuer/badges", []);
-		return $response;
+		// $response = $this->get("v1/issuer/issuers/$issuer/badges", []);
+		// return $response;
+		$response = $this->get("v2/issuers/$issuer/badgeclasses", []);
+		if ($response['status']['success']) {
+			return $response['result'];
+		}
+		return false;
 	}
 
 	public function issue_badge($issuer, $badge, $recipient) {
@@ -345,8 +355,21 @@ class OpenEducationBadgesApi {
 	}
 
 	public function get_assertions($issuer) {
-		$response = $this->get("v1/issuer/issuers/$issuer/assertions", []);
-		return $response;
+		// $response = $this->get("v1/issuer/issuers/$issuer/assertions", []);
+		// return $response;
+		$response = $this->get("v2/issuers/$issuer/assertions", []);
+		if ($response['status']['success']) {
+			return $response['result'];
+		}
+		return false;
+	}
+
+	public function get_assertions_by_badge($badge) {
+		$response = $this->get("v2/badgeclasses/$badge/assertions", []);
+		if ($response['status']['success']) {
+			return $response['result'];
+		}
+		return false;
 	}
 
 	public function get_client_id() {

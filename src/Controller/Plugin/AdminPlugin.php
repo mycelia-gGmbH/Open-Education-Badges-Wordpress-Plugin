@@ -3,6 +3,7 @@
 namespace DisruptiveElements\OpenEducationBadges\Controller\Plugin;
 
 Use DisruptiveElements\OpenEducationBadges\Controller\Plugin;
+use DisruptiveElements\OpenEducationBadges\Entity\Badge;
 use DisruptiveElements\OpenEducationBadges\Util\CachedApiWrapper;
 Use DisruptiveElements\OpenEducationBadges\Util\Utils;
 
@@ -22,6 +23,9 @@ class AdminPlugin {
 		add_option('oeb_settings', [], '', false);
 
 		if (is_admin() && isset($_GET['page'])) {
+
+			$asset_url = Plugin::PLUGIN_URL . '/assets';
+			wp_enqueue_style("oeb-backend-style", "$asset_url/backend.css");
 
 			// handle oeb_connections save
 			if ($_GET['page'] == 'oeb_connections' && isset($_GET['create']) || isset($_GET['edit'])) {
@@ -55,7 +59,7 @@ class AdminPlugin {
 							$autoinc_id = array_reduce($option_connections, function($carry, $connection) {
 								return max($carry + 1, $connection['id'] + 1);
 							}, 0);
-							$issuers = array_map(function($issuer) { return $issuer['slug']; }, $api_client->get_issuers());
+							$issuers = array_map(function($issuer) { return $issuer['entityId']; }, $api_client->get_issuers());
 							$new_connection = [
 								'id' => $autoinc_id,
 								'name' => $oeb_connection_name,
@@ -157,7 +161,17 @@ class AdminPlugin {
 	public static function page_oeb_admin() {
 		$oeb_page = 'oeb_admin';
 		$oeb_connections = get_option('oeb_connections');
-		$oeb_badges = Utils::get_all_badges();
+
+		$oeb_issuers = Utils::get_issuers();
+		$oeb_badge_objects = Utils::get_all_badges();
+		$oeb_badges = array_map(function(Badge $b) { return $b->api_data; }, $oeb_badge_objects);
+		$oeb_badge_entity_id = $_GET['badge'] ?? '';
+		if (!empty($oeb_badge_entity_id)) {
+			$oeb_badge_object = Utils::array_find($oeb_badge_objects, function($badge) use ($oeb_badge_entity_id) { return $badge->id == $oeb_badge_entity_id; });
+			if (!empty($oeb_badge_object)) {
+				$oeb_badge_assertions = $oeb_badge_object->get_assertions();
+			}
+		}
 		include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_admin.php';
 	}
 
@@ -198,9 +212,9 @@ class AdminPlugin {
 		$oeb_page = 'oeb_issue';
 
 		$oeb_badges = Utils::get_all_badges();
-		$oeb_badge_slug = $_GET['badge'] ?? '';
-		$oeb_badge = array_filter($oeb_badges, function($badge) use($oeb_badge_slug) {
-			return $badge['slug'] == $oeb_badge_slug;
+		$oeb_badge_entity_id = $_GET['badge'] ?? '';
+		$oeb_badge = array_filter($oeb_badges, function($badge) use($oeb_badge_entity_id) {
+			return $badge['entityId'] == $oeb_badge_entity_id;
 		});
 		$oeb_badge = reset($oeb_badge);
 		if (isset($_GET['badge'])) {

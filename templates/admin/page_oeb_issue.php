@@ -13,7 +13,7 @@
 		<div class="oeb-badgelist">
 			<?php foreach($oeb_badges as $badge): ?>
 				<a href="<?= add_query_arg([
-					'badge' => $badge['slug'],
+					'badge' => $badge['entityId'],
 					'page'=> $oeb_page
 				],
 				admin_url('admin.php')

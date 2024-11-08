@@ -12,7 +12,7 @@ class CachedApiWrapper {
 
 		if (empty($result)) {
 			$result = call_user_func([$api_client, $function_name], ...$parameters);
-			set_transient($transient_key, $result, 60);
+			set_transient($transient_key, $result, 600);
 		}
 
 		return $result;

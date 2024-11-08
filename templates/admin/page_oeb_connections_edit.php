@@ -83,11 +83,11 @@
 							type="checkbox"
 							id="oeb_connection_issuers_<?= $idx ?>"
 							name="oeb_connection_issuers[]"
-							value="<?= $issuer['slug'] ?>"
-							<?= in_array($issuer['slug'], $oeb_connection_issuers) ? 'checked' : '' ?>
+							value="<?= $issuer['entityId'] ?>"
+							<?= in_array($issuer['entityId'], $oeb_connection_issuers) ? 'checked' : '' ?>
 						>
 					</td>
-					<td><label for="oeb_connection_issuers_<?= $idx ?>"><?= $issuer['name'] . ' (' . $issuer['slug'] . ')'  ?></label></td>
+					<td><label for="oeb_connection_issuers_<?= $idx ?>"><?= $issuer['name'] . ' (' . $issuer['entityId'] . ')'  ?></label></td>
 				</tr>
 				<?php endforeach; ?>
 			</table>

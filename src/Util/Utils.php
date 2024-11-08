@@ -2,11 +2,18 @@
 
 namespace DisruptiveElements\OpenEducationBadges\Util;
 
+use DisruptiveElements\OpenEducationBadges\Entity\Badge;
+use DisruptiveElements\OpenEducationBadges\Entity\Issuer;
 Use DisruptiveElements\OpenEducationBadges\Util\OpenEducationBadgesApi;
 
 class Utils {
 
 	static $api_clients = [];
+
+	public static function array_find(array $arr, callable $fn) {
+		$res = array_filter($arr, $fn);
+		return reset($res);
+	}
 
 	public static function get_connection($connection_id) {
 		$oeb_connections = get_option('oeb_connections');
@@ -58,39 +65,64 @@ class Utils {
 		}
 	}
 
-	public static function get_all_badges() {
+	public static function get_issuers(): array {
+		$issuers = [];
 		$oeb_connections = get_option('oeb_connections');
-		$badges = [];
 		foreach($oeb_connections as $connection) {
 			$api_client = self::get_api_client($connection['id']);
-			foreach($connection['issuers'] as $issuer_slug) {
+			$response = CachedApiWrapper::api_request($api_client, 'get_issuers');
+			$response_issuers = array_map(function($r) use($connection) { return new Issuer($connection['id'], $r); }, $response);
+			$issuers = array_merge($issuers, $response_issuers);
+		}
+
+		return $issuers;
+	}
+
+	public static function get_all_badges(): array {
+		$badges = [];
+		$oeb_connections = get_option('oeb_connections');
+		foreach($oeb_connections as $connection) {
+			$api_client = self::get_api_client($connection['id']);
+			foreach($connection['issuers'] as $issuer_id) {
 				// $badges = array_merge($badges, $api_client->get_badges($issuer_slug));
-				$badges = array_merge($badges, CachedApiWrapper::api_request($api_client, 'get_badges', [$issuer_slug]));
+				// $badges = array_merge($badges, CachedApiWrapper::api_request($api_client, 'get_badges', [$issuer_slug]));
+				$response = CachedApiWrapper::api_request($api_client, 'get_badges', [$issuer_id]);
+				$response_badges = array_map(function($r) use($connection, $issuer_id) { return new Badge($connection['id'], $r, $issuer_id); }, $response);
+				$badges = array_merge($badges, $response_badges);
 			}
 		}
 
 		return $badges;
 	}
 
-	public static function issue_by_badge($badge_slug, $emails) {
+	public static function issue_by_badge($badge_id, $emails) {
 		$oeb_connections = get_option('oeb_connections');
 		foreach($oeb_connections as $connection) {
 			$api_client = self::get_api_client($connection['id']);
-			foreach($connection['issuers'] as $issuer_slug) {
+			foreach($connection['issuers'] as $issuer_id) {
 				// $badges = $api_client->get_badges($issuer_slug);
-				$badges = CachedApiWrapper::api_request($api_client, 'get_badges', [$issuer_slug]);
-				$target_badge = array_filter($badges, function($badge) use ($badge_slug) {
-					return $badge['slug'] == $badge_slug;
+				$badges = CachedApiWrapper::api_request($api_client, 'get_badges', [$issuer_id]);
+				$target_badge = array_filter($badges, function($badge) use ($badge_id) {
+					return $badge['entityId'] == $badge_id;
 				});
 				if (!empty($target_badge)) {
 					foreach($emails as $email) {
-						$api_client->issue_badge($issuer_slug, $badge_slug, $email);
-						// var_export('issue: ' . var_export([$issuer_slug, $badge_slug, $email], true));
+						$api_client->issue_badge($issuer_id, $badge_id, $email);
 					}
 					return;
 				}
 			}
 		}
+	}
+
+	public static function get_assertions_by_badge($badge_id) {
+		$oeb_connections = get_option('oeb_connections');
+		$assertions = [];
+		foreach($oeb_connections as $connection) {
+			$api_client = self::get_api_client($connection['id']);
+			$assertions = array_merge($assertions, $api_client->get_assertions_by_badge($badge_id));
+		}
+		return $assertions;
 	}
 
 	public static function list_badges_by_email($email) {
@@ -104,7 +136,7 @@ class Utils {
 			// $api_issuers = $api_client->get_issuers();
 			$api_issuers = CachedApiWrapper::api_request($api_client, 'get_issuers', []);
 			$api_issuer_slugs = array_map(function($issuer) {
-				return $issuer['slug'];
+				return $issuer['entityId'];
 			}, $api_issuers);
 
 			foreach($connection['issuers'] as $issuer_slug) {
@@ -130,7 +162,7 @@ class Utils {
 		if (!empty($email_badge_ids)) {
 			$badges = self::get_all_badges();
 			return array_filter($badges, function($badge) use ($email_badge_ids) {
-				return in_array($badge['slug'], $email_badge_ids);
+				return in_array($badge['entityId'], $email_badge_ids);
 			});
 		}
 
