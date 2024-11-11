@@ -26,6 +26,7 @@ class AdminPlugin {
 
 			$asset_url = Plugin::PLUGIN_URL . 'assets';
 			wp_enqueue_style("oeb-backend-style", "$asset_url/dist/backend.css");
+			wp_enqueue_script("oeb-backend-script", "$asset_url/dist/backend.js");
 
 			// handle oeb_connections save
 			if ($_GET['page'] == 'oeb_connections' && isset($_GET['create']) || isset($_GET['edit'])) {

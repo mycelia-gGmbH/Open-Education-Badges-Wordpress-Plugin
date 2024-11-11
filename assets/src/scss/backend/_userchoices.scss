@@ -1,0 +1,13 @@
+.choices {
+	.choices__inner {
+		max-width: 600px;
+		box-sizing: border-box;
+
+		.choices__input {
+			padding: 0;
+			border: none;
+			outline: none;
+			box-shadow: none;
+		}
+	}
+}

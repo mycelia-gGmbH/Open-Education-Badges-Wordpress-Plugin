@@ -13,6 +13,7 @@
     "vite": "^5.4.10"
   },
   "dependencies": {
+    "choices.js": "^11.0.2",
     "sass-embedded": "^1.80.6"
   }
 }

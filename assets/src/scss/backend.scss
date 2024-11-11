@@ -1,6 +1,9 @@
 @use 'backend/badgeslist';
 @use 'backend/badgedetails';
 @use 'backend/tags';
+@use 'backend/userchoices';
+
+@use "choices.js/src/styles/choices";
 
 // fixme temporary
 .notice.notice-warning { display: none; }
