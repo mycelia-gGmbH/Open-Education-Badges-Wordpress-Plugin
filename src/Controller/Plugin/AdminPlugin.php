@@ -219,12 +219,17 @@ class AdminPlugin {
 		$oeb_page = 'oeb_issue';
 
 		$oeb_badges = Utils::get_all_badges();
-		$oeb_badge_entity_id = $_GET['badge'] ?? '';
-		$oeb_badge = Utils::array_find($oeb_badges, function($badge) use($oeb_badge_entity_id) {
-			return $badge->id == $oeb_badge_entity_id;
-		});
-		if (isset($_GET['badge'])) {
+		if (!empty($_GET['badge'])) {
+			$oeb_badge_entity_id = $_GET['badge'];
+			$oeb_badge = Utils::array_find($oeb_badges, function($badge) use($oeb_badge_entity_id) {
+				return $badge->id == $oeb_badge_entity_id;
+			});
 			$users = get_users();
+			$oeb_badge_assertions = $oeb_badge->get_assertions();
+			$oeb_badge_recipients = [];
+			foreach($oeb_badge_assertions as $assertion) {
+				$oeb_badge_recipients[] = $assertion->recipient;
+			}
 			include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_issue_badge.php');
 		} else {
 			include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_issue.php');

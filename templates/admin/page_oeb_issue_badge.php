@@ -11,16 +11,6 @@
 
 	<div class="oeb-issue-badge postbox" style="padding: 0 12px 12px;">
 
-		<div class="oeb-issue-badge__chosen">
-			<div class="oeb-badgelist__image">
-				<img src="<?= $oeb_badge->image ?>" width="120" title="<?= $oeb_badge->name ?>" alt="<?= $oeb_badge->name ?>">
-			</div>
-
-			<div class="oeb-badgelist__title">
-				<p><?= $oeb_badge->name ?></p>
-			</div>
-		</div>
-
 		<form
 			method="post"
 			name="issue"
@@ -31,18 +21,31 @@
 
 			<table class="form-table">
 
+					<tr>
+						<th>Gewählter Badge</th>
+						<td>
+							<img src="<?= $oeb_badge->image ?>" width="120" title="<?= $oeb_badge->name ?>" alt="<?= $oeb_badge->name ?>">
+							<p><?= $oeb_badge->name ?></p>
+						</td>
+					</tr>
+
 					<tr class="oeb-issue-badge__users">
 						<th><label for="oeb_users">Wordpress-Benutzer</label></th>
 						<td>
 							<select name="oeb_users[]" multiple id="oeb_users">
 								<?php foreach($users as $user): ?>
 									<?php
+										$state = in_array($user->user_email, $oeb_badge_recipients) ? 'disabled':'';
+
 										$username = $user->user_email;
 										if (!empty($user->user_firstname) || !empty($user->user_lastname)) {
 											$username = $user->user_firstname . ' ' . $user->user_lastname . ' (' . $user->user_email . ')';
 										}
+										if ($state == 'disabled') {
+											$username .= ' - bereits erhalten';
+										}
 									?>
-									<option value="<?= $user->ID ?>"><?= $username ?></option>
+									<option <?= $state ?> value="<?= $user->ID ?>"><?= $username ?></option>
 								<?php endforeach; ?>
 							</select>
 						</td>
@@ -56,7 +59,7 @@
 					</tr>
 			</table>
 
-			<p><input type="submit" name="save" value="Badge vergeben"></p>
+			<p><input class="button" type="submit" name="save" value="Badge vergeben"></p>
 		</form>
 	</div>
 </div>
