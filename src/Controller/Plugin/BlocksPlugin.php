@@ -16,7 +16,7 @@ class BlocksPlugin {
 			'oeb-blocks-htm',
 			Plugin::PLUGIN_URL . "/assets/blocks/htm.js",
 			[],
-			filemtime(Plugin::PLUGIN_DIR . "/assets/blocks/htm.js")
+			filemtime(realpath(Plugin::PLUGIN_DIR . "/assets/blocks/htm.js"))
 		);
 
 		// register block categories
@@ -47,7 +47,7 @@ class BlocksPlugin {
 		]);
 
 		$asset_url = Plugin::PLUGIN_URL . '/assets/blocks/' . $block_name;
-		$asset_path = Plugin::PLUGIN_DIR . '/assets/blocks/' . $block_name;
+		$asset_path = realpath(Plugin::PLUGIN_DIR . '/assets/blocks/' . $block_name);
 		wp_register_script(
 			"oeb-$block_name-editor",
 			"$asset_url/editor.js",
@@ -69,9 +69,9 @@ class BlocksPlugin {
 
 		$slug = substr($block->name, strrpos($block->name, '/') + 1);
 
-		if(file_exists(Plugin::PLUGIN_DIR . "/templates/blocks/block_oeb_{$slug}.php")) {
+		if(file_exists(realpath(Plugin::PLUGIN_DIR . "/templates/blocks/block_oeb_{$slug}.php"))) {
 			ob_start();
-			include(Plugin::PLUGIN_DIR . "/templates/blocks/block_oeb_{$slug}.php");
+			include(realpath(Plugin::PLUGIN_DIR . "/templates/blocks/block_oeb_{$slug}.php"));
 			return ob_get_clean();
 		}
 

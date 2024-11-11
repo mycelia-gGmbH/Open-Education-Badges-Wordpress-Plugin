@@ -179,13 +179,13 @@ class AdminPlugin {
 				$oeb_badge_assertions = $oeb_badge_object->get_assertions();
 			}
 		}
-		include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_admin.php';
+		include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_admin.php');
 	}
 
 	public static function page_oeb_settings() {
 		$oeb_page = 'oeb_settings';
 		$oeb_settings = get_option('oeb_settings');
-		include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_settings.php';
+		include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_settings.php');
 	}
 
 	public static function page_oeb_connections() {
@@ -209,9 +209,9 @@ class AdminPlugin {
 				$oeb_issuers = CachedApiWrapper::api_request($api_client, 'get_issuers');
 			}
 
-			include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_connections_edit.php';
+			include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_connections_edit.php');
 		} else {
-			include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_connections.php';
+			include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_connections.php');
 		}
 	}
 
@@ -225,9 +225,9 @@ class AdminPlugin {
 		});
 		if (isset($_GET['badge'])) {
 			$users = get_users();
-			include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_issue_badge.php';
+			include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_issue_badge.php');
 		} else {
-			include Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_issue.php';
+			include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_issue.php');
 		}
 	}
 }
