@@ -10,13 +10,15 @@ if (!empty($user)):
 <div class="oeb-badgelist">
 	<?php foreach($badges as $badge): ?>
 		<div class="oeb-badgelist__item">
+			<a target="_blank" href="<?= $badge->api_data['openBadgeId'] ?>">
 			<div class="oeb-badgelist__image">
-				<img src="<?= $badge['image'] ?>" width="120" title="<?= $badge['name'] ?>"  alt="<?= $badge['name'] ?>">
+				<img src="<?= $badge->image ?>" width="120" title="<?= $badge->name ?>"  alt="<?= $badge->name ?>">
 			</div>
 
 			<div class="oeb-badgelist__title">
-				<p><?= $badge['name'] ?></p>
+				<p><?= $badge->name ?></p>
 			</div>
+			</a>
 		</div>
 	<?php endforeach; ?>
 </div>

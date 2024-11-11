@@ -8,7 +8,7 @@ if (!current_user_can('oeb_issue') && !current_user_can('manage_options')) {
 $oeb_badges = Utils::get_all_badges();
 $oeb_badge_entity_id = $_GET['oeb_badge'] ?? '';
 $oeb_badge = array_filter($oeb_badges, function($badge) use($oeb_badge_entity_id) {
-	return $badge['entityId'] == $oeb_badge_entity_id;
+	return $badge->id == $oeb_badge_entity_id;
 });
 $oeb_badge = reset($oeb_badge);
 
@@ -24,13 +24,13 @@ $oeb_badge = reset($oeb_badge);
 
 			<div class="oeb-badgelist">
 				<?php foreach($oeb_badges as $badge): ?>
-					<a href="?oeb_issue&oeb_badge=<?= $badge['entityId'] ?>" class="oeb-badgelist__item">
+					<a href="?oeb_issue&oeb_badge=<?= $badge->id ?>" class="oeb-badgelist__item">
 						<div class="oeb-badgelist__image">
-							<img src="<?= $badge['image'] ?>" width="96" title="<?= $badge['name'] ?>"  alt="<?= $badge['name'] ?>">
+							<img src="<?= $badge->image ?>" width="96" title="<?= $badge->name ?>"  alt="<?= $badge->name ?>">
 						</div>
 
 						<div class="oeb-badgelist__title">
-							<p><?= $badge['name'] ?></p>
+							<p><?= $badge->name ?></p>
 						</div>
 					</a>
 				<?php endforeach; ?>
@@ -48,11 +48,11 @@ $oeb_badge = reset($oeb_badge);
 			?>
 
 			<div class="oeb-badgelist__image">
-				<img src="<?= $oeb_badge['image'] ?>" width="120" title="<?= $badge['name'] ?>" alt="<?= $badge['name'] ?>">
+				<img src="<?= $oeb_badge->image ?>" width="120" title="<?= $badge->name ?>" alt="<?= $badge->name ?>">
 			</div>
 
 			<div class="oeb-badgelist__title">
-				<p><?= $oeb_badge['name'] ?></p>
+				<p><?= $oeb_badge->name ?></p>
 			</div>
 		</div>
 

@@ -149,8 +149,8 @@ class Utils {
 				// $assertions = $api_client->get_assertions($issuer_slug);
 				$assertions = CachedApiWrapper::api_request($api_client, 'get_assertions', [$issuer_slug]);
 				foreach ($assertions as $assertion) {
-					if ($assertion['recipient_type'] == 'email' && $assertion['recipient_identifier'] == $email) {
-						$badge_id = preg_replace('(.*\/)', '', $assertion['badge_class']);
+					if ($assertion['recipient']['type'] == 'email' && $assertion['recipient']['plaintextIdentity'] == $email) {
+						$badge_id = preg_replace('(.*\/)', '', $assertion['badgeclass']);
 						if (!in_array($badge_id, $email_badge_ids)) {
 							$email_badge_ids[] = $badge_id;
 						}
@@ -162,7 +162,7 @@ class Utils {
 		if (!empty($email_badge_ids)) {
 			$badges = self::get_all_badges();
 			return array_filter($badges, function($badge) use ($email_badge_ids) {
-				return in_array($badge['entityId'], $email_badge_ids);
+				return in_array($badge->id, $email_badge_ids);
 			});
 		}
 
