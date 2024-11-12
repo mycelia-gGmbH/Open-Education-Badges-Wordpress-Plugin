@@ -10,7 +10,7 @@
 		class="validate"
 		novalidate="novalidate"
 		>
-		<input name="action" type="hidden" value="create" />
+		<!-- <input name="action" type="hidden" value="create" /> -->
 		<input
 			type="hidden"
 			id="_wpnonce_create-user"
@@ -94,8 +94,8 @@
 		<?php endif; ?>
 
 		<p class="submit">
-			<input type="submit" name="save"class="button button-primary" value="Speichern">
-			<input type="submit" name="delete"class="button button-secondary" value="Verbindung Löschen">
+			<button type="submit" name="save"class="button button-primary" value="Speichern">Speichern</button>
+			<button type="submit" name="delete" class="button button-secondary" value="Verbindung Löschen">Verbindung Löschen</button>
 		</p>
 
 

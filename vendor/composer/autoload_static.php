@@ -7,6 +7,11 @@ namespace Composer\Autoload;
 class ComposerStaticInited167561212d8a20766a5c40740d3431
 {
     public static $prefixLengthsPsr4 = array (
+        'c' => 
+        array (
+            'chillerlan\\Settings\\' => 20,
+            'chillerlan\\QRCode\\' => 18,
+        ),
         'D' => 
         array (
             'DisruptiveElements\\OpenEducationBadges\\' => 39,
@@ -14,6 +19,14 @@ class ComposerStaticInited167561212d8a20766a5c40740d3431
     );
 
     public static $prefixDirsPsr4 = array (
+        'chillerlan\\Settings\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/chillerlan/php-settings-container/src',
+        ),
+        'chillerlan\\QRCode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/chillerlan/php-qrcode/src',
+        ),
         'DisruptiveElements\\OpenEducationBadges\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',

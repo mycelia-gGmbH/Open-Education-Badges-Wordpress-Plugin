@@ -47,10 +47,13 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 
 			<?php else:
 
-				$badges = array_filter($oeb_badges, function($b) use($oeb_badge_entity_id) {
-					return $b->id == $oeb_badge_entity_id;
-				});
-				$badge = reset($badges);
+
+				// $badges = array_filter($oeb_badges, function($b) use($oeb_badge_entity_id) {
+				// 	return $b->id == $oeb_badge_entity_id;
+				// });
+				// $badge = reset($badges);
+				$badge = $oeb_badge_object;
+
 				if (!empty($badge)):
 
 					$url_create_assertion = add_query_arg([
@@ -101,7 +104,8 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 						<h3>Kriterien</h3>
 						<p><?= nl2br($badge->api_data['criteriaNarrative']) ?></p>
 						<?php if (!empty($badge->api_data['criteriaUrl'])): ?>
-							<p><strong>Url:</strong> <a target="_blank" href="<?= $badge->api_data['criteriaUrl'] ?>"><?= $badge->api_data['criteriaUrl'] ?></a></p>
+							<p><s>Url:</s
+							trong> <a target="_blank" href="<?= $badge->api_data['criteriaUrl'] ?>"><?= $badge->api_data['criteriaUrl'] ?></a></p>
 						<?php endif; ?>
 						<?php if (!empty($badge->api_data['alignment'])): ?>
 							<h3>Alignment</h3>
@@ -122,13 +126,74 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 									</td>
 									<td>
 										<?= $competency['description'] ?>
-										
 									</td>
 								</tr>
 							<?php endforeach; ?>
 							</table>
 						<?php endif; ?>
 
+						<h3>QR-Code Vergaben</h3>
+						<?php if (!empty($oeb_badge_qrcodes)): ?>
+							<table class="widefat">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Ersteller:in</th>
+										<th>Gültigkeit</th>
+										<th>Aktionen</th>
+									<tr>
+								</thead>
+							<?php foreach($oeb_badge_qrcodes as $qrcode): ?>
+								<tr>
+									<td><?= $qrcode->title ?></td>
+									<td><?= $qrcode->createdBy ?></td>
+									<td>
+										<?php if (!empty($qrcode->valid_from)): ?>
+										Ab <?= $qrcode->valid_from->format('d.m.Y') ?><br>
+										<?php endif; ?>
+										<?php if (!empty($qrcode->expires_at)): ?>
+										Bis <?= $qrcode->expires_at->format('d.m.Y') ?>
+										<?php endif; ?>
+									</td>
+									<td>
+										<?php
+										$url_edit_qr =  add_query_arg([
+												'badge' => $badge->id,
+												'action' => 'qr',
+												'page'=> 'oeb_admin',
+												'qr' => $qrcode->id
+											],
+											admin_url('admin.php')
+										);
+										?>
+										<a href="<?= $url_edit_qr ?>">Bearbeiten</a>
+										<?php
+										$url_show_qr =  add_query_arg([
+												'badge' => $badge->id,
+												'action' => 'qr-show',
+												'page'=> 'oeb_admin',
+												'qr' => $qrcode->id
+											],
+											admin_url('admin.php')
+										);
+										?>
+										<a href="<?= $url_show_qr ?>">Anzeigen</a>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+							</table><br>
+						<?php endif; ?>
+
+						<?php 
+							$url_create_qr =  add_query_arg([
+									'badge' => $badge->id,
+									'action' => 'qr',
+									'page'=> 'oeb_admin'
+								],
+								admin_url('admin.php')
+							);
+						?>
+						<a href="<?= $url_create_qr ?>" class="button">QR Code erstellen</a>
 
 						<?php if (!empty($oeb_badge_assertions)): ?>
 							<br><h3><?= count($oeb_badge_assertions) ?> Empfänger:innen</h3>
@@ -155,7 +220,6 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 					</ul>
 				</div>
 				<?php endif; ?>
-
 			<?php endif; ?>
 
 		<?php else: ?>

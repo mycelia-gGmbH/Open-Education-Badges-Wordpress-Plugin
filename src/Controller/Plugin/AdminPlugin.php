@@ -7,6 +7,8 @@ use DisruptiveElements\OpenEducationBadges\Entity\Badge;
 use DisruptiveElements\OpenEducationBadges\Util\CachedApiWrapper;
 Use DisruptiveElements\OpenEducationBadges\Util\Utils;
 
+Use chillerlan\QRCode\QRCode;
+
 class AdminPlugin {
 
 	public function __construct() { }
@@ -29,14 +31,14 @@ class AdminPlugin {
 			wp_enqueue_script("oeb-backend-script", "$asset_url/dist/backend.js");
 
 			// handle oeb_connections save
-			if ($_GET['page'] == 'oeb_connections' && isset($_GET['create']) || isset($_GET['edit'])) {
+			if ($_GET['page'] == 'oeb_connections' && !empty($_POST)) {
 
 				$oeb_connection_id = $_GET['oeb_connection'] ?? '';
 				$oeb_connection_name = $_POST['oeb_connection_name'] ?? '';
 				$oeb_connection_clientid = $_POST['oeb_connection_clientid'] ?? '';
 				$oeb_connection_clientsecret = $_POST['oeb_connection_clientsecret'] ?? '';
 
-				if (isset($_POST['delete']) && !empty($oeb_connection_id)) {
+				if (isset($_POST['delete']) && $oeb_connection_id !== '') {
 					$option_connections = get_option('oeb_connections');
 					$filtered_connections = array_filter($option_connections, function($connection) use ($oeb_connection_id) {
 						return $connection['id'] != $oeb_connection_id;
@@ -75,7 +77,7 @@ class AdminPlugin {
 									$connection['name'] = $oeb_connection_name;
 									$connection['client_id'] = $oeb_connection_clientid;
 									$connection['client_secret'] = $oeb_connection_clientsecret;
-									$connection['issuers'] = $_POST['oeb_issuers']??[];
+									$connection['issuers'] = $_POST['oeb_connection_issuers']??[];
 								}
 							}
 						}
@@ -100,6 +102,35 @@ class AdminPlugin {
 							</div>
 							<?php
 						});
+					}
+				}
+			}
+
+			if ($_GET['page'] == 'oeb_admin' && isset($_GET['badge'])) {
+				if (isset($_GET['action']) && $_GET['action'] == 'qr' && !empty($_POST)) {
+					if (wp_verify_nonce($_REQUEST['_wpnonce'], 'oeb-create-qr-'.$_GET['badge'])) {
+
+						$badges = Utils::get_all_badges();
+
+						$badge_id = $_GET['badge'];
+						$badge = Utils::array_find($badges, function($badge) use ($badge_id) { return $badge->id == $badge_id; });
+						if (!empty($badge)) {
+							$response = $badge->save_qrcode(
+								$_GET['qr'],
+								$_POST['oeb_qr_title'],
+								$_POST['oeb_qr_createdBy'],
+								$_POST['oeb_qr_valid_from'],
+								$_POST['oeb_qr_expires_at']
+							);
+
+							wp_redirect(add_query_arg([
+									'page'=> $_GET['page'],
+									'badge' => $badge_id
+								],
+								admin_url('admin.php')
+							));
+							exit();
+						}
 					}
 				}
 			}
@@ -176,10 +207,38 @@ class AdminPlugin {
 		if (!empty($oeb_badge_entity_id)) {
 			$oeb_badge_object = Utils::array_find($oeb_badge_objects, function($badge) use ($oeb_badge_entity_id) { return $badge->id == $oeb_badge_entity_id; });
 			if (!empty($oeb_badge_object)) {
+				
 				$oeb_badge_assertions = $oeb_badge_object->get_assertions();
+				$oeb_badge_qrcodes = $oeb_badge_object->get_qrcodes();
 			}
 		}
-		include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_admin.php');
+
+		if (isset($_GET['action']) && ($_GET['action'] == 'qr' || $_GET['action'] == 'qr-show')) {
+
+			$oeb_qr_code = null;
+			if (!empty($_GET['qr'])) {
+				$oeb_qr_code_id = $_GET['qr'];
+				$oeb_qr_code = Utils::array_find($oeb_badge_qrcodes, function($qr) use($oeb_qr_code_id) {
+					return $qr->id == $oeb_qr_code_id;
+				});
+				if (empty($oeb_qr_code)) {
+					return false;
+				}
+			}
+			if ($_GET['action'] == 'qr') {
+				$oeb_qr_title = $_POST['oeb_qr_title'] ?? $oeb_qr_code->title ?? '';
+				$oeb_qr_createdBy = $_POST['oeb_qr_createdBy'] ?? $oeb_qr_code->createdBy ?? '';
+				$oeb_qr_valid_from = $_POST['oeb_qr_valid_from'] ?? $oeb_qr_code->valid_from ? $oeb_qr_code->valid_from->format('Y-m-d') : '';
+				$oeb_qr_expires_at = $_POST['oeb_qr_expires_at'] ?? $oeb_qr_code->expires_at ? $oeb_qr_code->expires_at->format('Y-m-d') : '';
+
+				include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_admin_qr_edit.php');
+			} else if ($_GET['action'] == 'qr-show') {
+				$qrcode_image = (new QRCode())->render($oeb_qr_code->url);
+				include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_admin_qr_show.php');
+			}
+		} else {
+			include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_admin.php');
+		}
 	}
 
 	public static function page_oeb_settings() {
@@ -193,7 +252,7 @@ class AdminPlugin {
 
 		$oeb_connections = get_option('oeb_connections');
 
-		if (isset($_GET['create']) || isset($_GET['edit'])) {
+		if (isset($_GET['create']) || isset($_GET['oeb_connection'])) {
 			$oeb_connection_id = $_GET['oeb_connection'] ?? '';
 			if ($oeb_connection_id != '') {
 				$oeb_connection = Utils::get_connection($oeb_connection_id);
@@ -205,8 +264,10 @@ class AdminPlugin {
 
 			$oeb_issuers = [];
 			if ($oeb_connection_id != '') {
-				$api_client = Utils::get_api_client($oeb_connection_id);
-				$oeb_issuers = CachedApiWrapper::api_request($api_client, 'get_issuers');
+				$oeb_api_client = Utils::get_api_client($oeb_connection_id);
+				if (!empty($oeb_api_client)) {
+					$oeb_issuers = CachedApiWrapper::api_request($oeb_api_client, 'get_issuers');
+				}
 			}
 
 			include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_connections_edit.php');

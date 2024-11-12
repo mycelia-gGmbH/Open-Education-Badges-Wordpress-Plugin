@@ -5,7 +5,7 @@ namespace DisruptiveElements\OpenEducationBadges\Entity;
 class Issuer extends ApiObject {
 
 	public string $name;
-	public string $image;
+	public ?string $image;
 
 	public function __construct(string $connection, array $api_data) {
 		$this->connection = $connection;

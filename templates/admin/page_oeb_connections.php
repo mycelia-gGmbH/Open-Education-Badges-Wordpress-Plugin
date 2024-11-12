@@ -34,7 +34,7 @@
 				<td class="plugin-title column-primary"><strong><?= $connection['name'] ?></strong>
 					<div class="row-actions visible">
 						<span class="deactivate">
-							<a href="<?= $url_page ?>&oeb_connection=<?=$connection['id'] ?>&edit">Bearbeiten</a>
+							<a href="<?= $url_page ?>&oeb_connection=<?=$connection['id'] ?>">Bearbeiten</a>
 							<?php /* <a href="<?= $url_page ?>&oeb_connection=1&disable">Deaktivieren</a>*/ ?>
 						</span>
 					</div>

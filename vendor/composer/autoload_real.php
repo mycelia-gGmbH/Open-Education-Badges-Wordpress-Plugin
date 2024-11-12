@@ -22,6 +22,8 @@ class ComposerAutoloaderInited167561212d8a20766a5c40740d3431
             return self::$loader;
         }
 
+        require __DIR__ . '/platform_check.php';
+
         spl_autoload_register(array('ComposerAutoloaderInited167561212d8a20766a5c40740d3431', 'loadClassLoader'), true, true);
         self::$loader = $loader = new \Composer\Autoload\ClassLoader(\dirname(__DIR__));
         spl_autoload_unregister(array('ComposerAutoloaderInited167561212d8a20766a5c40740d3431', 'loadClassLoader'));

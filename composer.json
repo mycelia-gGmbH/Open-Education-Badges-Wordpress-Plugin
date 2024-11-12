@@ -5,5 +5,8 @@
       "psr-4": {
           "DisruptiveElements\\OpenEducationBadges\\": "src"
       }
-  }
+  },
+    "require": {
+        "chillerlan/php-qrcode": "^5.0"
+    }
 }

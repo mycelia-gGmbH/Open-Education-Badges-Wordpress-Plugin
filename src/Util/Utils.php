@@ -71,8 +71,10 @@ class Utils {
 		foreach($oeb_connections as $connection) {
 			$api_client = self::get_api_client($connection['id']);
 			$response = CachedApiWrapper::api_request($api_client, 'get_issuers');
-			$response_issuers = array_map(function($r) use($connection) { return new Issuer($connection['id'], $r); }, $response);
-			$issuers = array_merge($issuers, $response_issuers);
+			if (!empty($response)) {
+				$response_issuers = array_map(function($r) use($connection) { return new Issuer($connection['id'], $r); }, $response);
+				$issuers = array_merge($issuers, $response_issuers);
+			}
 		}
 
 		return $issuers;
@@ -87,8 +89,10 @@ class Utils {
 				// $badges = array_merge($badges, $api_client->get_badges($issuer_slug));
 				// $badges = array_merge($badges, CachedApiWrapper::api_request($api_client, 'get_badges', [$issuer_slug]));
 				$response = CachedApiWrapper::api_request($api_client, 'get_badges', [$issuer_id]);
-				$response_badges = array_map(function($r) use($connection, $issuer_id) { return new Badge($connection['id'], $r, $issuer_id); }, $response);
-				$badges = array_merge($badges, $response_badges);
+				if (!empty($response)) {
+					$response_badges = array_map(function($r) use($connection, $issuer_id) { return new Badge($connection['id'], $r, $issuer_id); }, $response);
+					$badges = array_merge($badges, $response_badges);
+				}
 			}
 		}
 

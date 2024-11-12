@@ -21,4 +21,22 @@ class CachedApiWrapper {
 
 		return $result;
 	}
+
+	public static function clear_request($api_client, $function_name, $parameters = []) {
+		$transient_key = 'oeb_api_cache_' . $api_client->client_id . '_' . $function_name . '_' . md5(serialize($parameters));
+		delete_transient($transient_key);
+	}
+
+	public static function clear_cache($api_client) {
+		global $wpdb;
+		$sql = "SELECT `option_name` AS `name`, `option_value` AS `value`
+					FROM  $wpdb->options
+					WHERE `option_name` LIKE '%transient_oeb_api_cache_%'
+					ORDER BY `option_name`";
+
+		$results = $wpdb->get_results($sql);
+		// foreach($results as $row) {
+		// 	var_export($row);
+		// }
+	}
 }

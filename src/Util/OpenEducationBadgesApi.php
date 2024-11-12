@@ -21,6 +21,7 @@ class OpenEducationBadgesApi {
 			string $client_id = "",
 			string $client_secret = "",
 			string $api_base = "https://api.openbadges.education/",
+			// string $api_base = "https://badgr.rincewind.esirion.de/",
 			string $username = "",
 			string $password = "",
 			callable $store_token = null,
@@ -86,7 +87,7 @@ class OpenEducationBadgesApi {
 					mkdir(WP_CONTENT_DIR.'/OpenEducationBadges');
 			  	}
 				$current_file = date('Y-m-d').'.log';
-				file_put_contents(WP_CONTENT_DIR.'/OpenEducationBadges/'.$current_file, "$level: $msg\n", FILE_APPEND | LOCK_EX);
+				file_put_contents(WP_CONTENT_DIR.'/OpenEducationBadges/'.$current_file, date('H:i:s')." $level: $msg\n", FILE_APPEND | LOCK_EX);
 			}
 		}
 	}
@@ -309,7 +310,7 @@ class OpenEducationBadgesApi {
 		// $response = $this->get("v1/issuer/issuers", []);
 		// return $response;
 		$response = $this->get("v2/issuers", []);
-		if ($response['status']['success']) {
+		if (!empty($response) && $response['status']['success']) {
 			return $response['result'];
 		}
 		return false;
@@ -319,8 +320,10 @@ class OpenEducationBadgesApi {
 		// $response = $this->get("v1/issuer/issuers/$issuer/badges", []);
 		// return $response;
 		$response = $this->get("v2/issuers/$issuer/badgeclasses", []);
-		if ($response['status']['success']) {
-			return $response['result'];
+		if (!empty($response)) {
+			if ($response['status']['success']) {
+				return $response['result'];
+			}
 		}
 		return false;
 	}
@@ -368,6 +371,37 @@ class OpenEducationBadgesApi {
 		$response = $this->get("v2/badgeclasses/$badge/assertions", []);
 		if ($response['status']['success']) {
 			return $response['result'];
+		}
+		return false;
+	}
+
+	// FIXME: no v2 qr api available
+	public function get_qrcodes($issuer, $badge) {
+		$response = $this->get("v1/issuer/issuers/$issuer/badges/$badge/qrcodes", []);
+		if (!empty($response)) {
+			return $response;
+		}
+		return false;
+	}
+	public function create_qrcode($issuer, $badge, $data) {
+		// FIXME: required even though in endpoint URL
+		$data['issuer_id'] = $issuer;
+		$data['badgeclass_id'] = $badge;
+
+		$response = $this->post("v1/issuer/issuers/$issuer/badges/$badge/qrcodes", $data);
+		if (!empty($response)) {
+			return $response;
+		}
+		return false;
+	}
+	public function update_qrcode($issuer, $badge, $qrcode, $data) {
+		// FIXME: required even though in endpoint URL
+		$data['issuer_id'] = $issuer;
+		$data['badgeclass_id'] = $badge;
+
+		$response = $this->put("v1/issuer/issuers/$issuer/badges/$badge/qrcodes/$qrcode", $data);
+		if (!empty($response)) {
+			return $response;
 		}
 		return false;
 	}
