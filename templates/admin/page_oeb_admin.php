@@ -140,7 +140,7 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 										<th>Name</th>
 										<th>Ersteller:in</th>
 										<th>Gültigkeit</th>
-										<th>Aktionen</th>
+										<th style="width: 165px;">Aktionen</th>
 									<tr>
 								</thead>
 							<?php foreach($oeb_badge_qrcodes as $qrcode): ?>
@@ -155,7 +155,7 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 										Bis <?= $qrcode->expires_at->format('d.m.Y') ?>
 										<?php endif; ?>
 									</td>
-									<td>
+									<td style="white-space: nowrap;">
 										<?php
 										$url_edit_qr =  add_query_arg([
 												'badge' => $badge->id,
@@ -166,7 +166,7 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 											admin_url('admin.php')
 										);
 										?>
-										<a href="<?= $url_edit_qr ?>">Bearbeiten</a>
+										<a class="button" href="<?= $url_edit_qr ?>">Bearbeiten</a>
 										<?php
 										$url_show_qr =  add_query_arg([
 												'badge' => $badge->id,
@@ -177,7 +177,7 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 											admin_url('admin.php')
 										);
 										?>
-										<a href="<?= $url_show_qr ?>">Anzeigen</a>
+										<a class="button" href="<?= $url_show_qr ?>">Anzeigen</a>
 									</td>
 								</tr>
 							<?php endforeach; ?>

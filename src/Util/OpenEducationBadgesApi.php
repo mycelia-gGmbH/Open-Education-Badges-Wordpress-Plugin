@@ -18,18 +18,20 @@ class OpenEducationBadgesApi {
 	private $loglevel = 'error';
 
 	public function __construct(
-			string $client_id = "",
-			string $client_secret = "",
-			string $api_base = "https://api.openbadges.education/",
-			// string $api_base = "https://badgr.rincewind.esirion.de/",
-			string $username = "",
-			string $password = "",
-			callable $store_token = null,
-			callable $retrieve_token = null
-		) {
+		string $client_id = "",
+		string $client_secret = "",
+		string $api_base = "",
+		string $username = "",
+		string $password = "",
+		callable $store_token = null,
+		callable $retrieve_token = null
+	) {
 
 		$this->client_id = $client_id;
 		$this->client_secret = $client_secret;
+
+		if (empty($api_base)) { $api_base = 'https://api.openbadges.education/'; }
+
 		$this->api_base = $api_base;
 		$this->username = $username;
 		$this->password = $password;
@@ -263,6 +265,9 @@ class OpenEducationBadgesApi {
 	private function put($endpoint, $params) {
 		return $this->api_request('put', $endpoint, $params);
 	}
+	private function delete($endpoint, $params) {
+		return $this->api_request('delete', $endpoint, $params);
+	}
 
 	private function request_access_token() {
 
@@ -400,6 +405,17 @@ class OpenEducationBadgesApi {
 		$data['badgeclass_id'] = $badge;
 
 		$response = $this->put("v1/issuer/issuers/$issuer/badges/$badge/qrcodes/$qrcode", $data);
+		if (!empty($response)) {
+			return $response;
+		}
+		return false;
+	}
+	public function delete_qrcode($issuer, $badge, $qrcode) {
+		// FIXME: required even though in endpoint URL
+		$data['issuer_id'] = $issuer;
+		$data['badgeclass_id'] = $badge;
+
+		$response = $this->delete("v1/issuer/issuers/$issuer/badges/$badge/qrcodes/$qrcode", $data);
 		if (!empty($response)) {
 			return $response;
 		}

@@ -67,6 +67,21 @@
 					/>
 				</td>
 			</tr>
+			<tr class="form-field form-required">
+				<th scope="row">
+					<label for="oeb_connection_clientsecret">Server Base URL</label>
+				</th>
+				<td>
+					<input
+						name="oeb_connection_baseurl"
+						type="text"
+						value="<?= $oeb_connection_baseurl ?>"
+						aria-required="true"
+						autocorrect="off"
+						autocomplete="off"
+					/>
+				</td>
+			</tr>
 		</table>
 
 		<?php if (!empty($oeb_issuers)): ?>

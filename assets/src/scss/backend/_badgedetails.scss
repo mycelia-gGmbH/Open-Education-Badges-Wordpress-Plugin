@@ -42,7 +42,7 @@
 	}
 
 	&__right {
-		max-width: 600px;
+		max-width: 700px;
 		padding-top: 16px;
 		padding-bottom: 32px;
 
@@ -51,7 +51,12 @@
 		}
 
 		table {
+			width: 100%;
 			table-layout: fixed;
+			td {
+				width: 10px;
+				overflow: hidden;
+			}
 		}
 	}
 }

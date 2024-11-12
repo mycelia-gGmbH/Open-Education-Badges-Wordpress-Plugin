@@ -37,13 +37,14 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 					class="validate"
 				>
 					<table class="form-table">
-					<?php wp_nonce_field('oeb-create-qr-'.$badge->id); ?>
+					<?php wp_nonce_field('oeb-edit-qr-'.$badge->id); ?>
 						<tr><th><label for="oeb_qr_title">Titel</label></th><td><input required name="oeb_qr_title" value="<?= $oeb_qr_title ?>"></td></tr>
 						<tr><th><label for="oeb_qr_createdBy">Name Ersteller:in</label></th><td><input required name="oeb_qr_createdBy" value="<?= $oeb_qr_createdBy ?>"></td></tr>
 						<tr><th><label for="oeb_qr_valid_from">Start-Datum</label></th><td><input name="oeb_qr_valid_from" type="date" value="<?= $oeb_qr_valid_from ?>"></td></tr>
 						<tr><th><label for="oeb_qr_expires_at">End-Datum</label></th><td><input name="oeb_qr_expires_at" type="date" value="<?= $oeb_qr_expires_at ?>"></td></tr>
 					</table>
-					<input type="submit" class="button" name="save" value="Speichern">
+					<input type="submit" class="button button-primary" name="save" value="Speichern">
+					<input type="submit" class="button" name="delete" value="Löschen">
 				</form>
 
 			</div>

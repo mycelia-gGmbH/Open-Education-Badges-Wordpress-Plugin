@@ -37,6 +37,7 @@ class AdminPlugin {
 				$oeb_connection_name = $_POST['oeb_connection_name'] ?? '';
 				$oeb_connection_clientid = $_POST['oeb_connection_clientid'] ?? '';
 				$oeb_connection_clientsecret = $_POST['oeb_connection_clientsecret'] ?? '';
+				$oeb_connection_baseurl = $_POST['oeb_connection_baseurl'] ?? '';
 
 				if (isset($_POST['delete']) && $oeb_connection_id !== '') {
 					$option_connections = get_option('oeb_connections');
@@ -54,7 +55,7 @@ class AdminPlugin {
 					exit();
 
 				} else if (!empty($oeb_connection_name) && !empty($oeb_connection_clientid) && !empty($oeb_connection_clientsecret)) {
-					if ($api_client = Utils::test_connection($oeb_connection_clientid, $oeb_connection_clientsecret)) {
+					if ($api_client = Utils::test_connection($oeb_connection_clientid, $oeb_connection_clientsecret, $oeb_connection_baseurl)) {
 						$option_connections = get_option('oeb_connections');
 
 						// create new
@@ -69,6 +70,7 @@ class AdminPlugin {
 								'client_id' => $oeb_connection_clientid,
 								'client_secret' => $oeb_connection_clientsecret,
 								'issuers' => $issuers,
+								'baseurl' => $oeb_connection_baseurl,
 							];
 							$option_connections[] = $new_connection;
 						} else {
@@ -77,6 +79,7 @@ class AdminPlugin {
 									$connection['name'] = $oeb_connection_name;
 									$connection['client_id'] = $oeb_connection_clientid;
 									$connection['client_secret'] = $oeb_connection_clientsecret;
+									$connection['baseurl'] = $oeb_connection_baseurl;
 									$connection['issuers'] = $_POST['oeb_connection_issuers']??[];
 								}
 							}
@@ -108,20 +111,25 @@ class AdminPlugin {
 
 			if ($_GET['page'] == 'oeb_admin' && isset($_GET['badge'])) {
 				if (isset($_GET['action']) && $_GET['action'] == 'qr' && !empty($_POST)) {
-					if (wp_verify_nonce($_REQUEST['_wpnonce'], 'oeb-create-qr-'.$_GET['badge'])) {
+					if (wp_verify_nonce($_REQUEST['_wpnonce'], 'oeb-edit-qr-'.$_GET['badge'])) {
 
 						$badges = Utils::get_all_badges();
 
 						$badge_id = $_GET['badge'];
 						$badge = Utils::array_find($badges, function($badge) use ($badge_id) { return $badge->id == $badge_id; });
 						if (!empty($badge)) {
-							$response = $badge->save_qrcode(
-								$_GET['qr'],
-								$_POST['oeb_qr_title'],
-								$_POST['oeb_qr_createdBy'],
-								$_POST['oeb_qr_valid_from'],
-								$_POST['oeb_qr_expires_at']
-							);
+
+							if (isset($_POST['save'])) {
+								$response = $badge->save_qrcode(
+									$_GET['qr'],
+									$_POST['oeb_qr_title'],
+									$_POST['oeb_qr_createdBy'],
+									$_POST['oeb_qr_valid_from'],
+									$_POST['oeb_qr_expires_at']
+								);
+							} else if (isset($_POST['delete'])) {
+								$badge->delete_qrcode($_GET['qr']);
+							}
 
 							wp_redirect(add_query_arg([
 									'page'=> $_GET['page'],
@@ -261,6 +269,7 @@ class AdminPlugin {
 			$oeb_connection_clientid = $_POST['oeb_connection_clientid'] ?? $oeb_connection['client_id'] ?? '';
 			$oeb_connection_clientsecret = $_POST['oeb_connection_clientsecret'] ?? $oeb_connection['client_secret'] ?? '';
 			$oeb_connection_issuers = $_POST['oeb_connection_issuers'] ?? $oeb_connection['issuers'] ?? [];
+			$oeb_connection_baseurl = $_POST['oeb_connection_baseurl'] ?? $oeb_connection['baseurl'] ?? '';
 
 			$oeb_issuers = [];
 			if ($oeb_connection_id != '') {

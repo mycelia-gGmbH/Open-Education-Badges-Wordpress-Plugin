@@ -29,7 +29,8 @@ class Utils {
 			$connection = self::get_connection($connection_id);
 			self::$api_clients[$connection_id] = new OpenEducationBadgesApi(
 				$connection['client_id'],
-				$connection['client_secret']
+				$connection['client_secret'],
+				$connection['baseurl'] ?? ''
 			);
 			self::$api_clients[$connection_id]->set_store_token([static::class, 'store_token']);
 			self::$api_clients[$connection_id]->set_retrieve_token([static::class, 'retrieve_token']);
@@ -49,10 +50,11 @@ class Utils {
 		return null;
 	}
 
-	public static function test_connection($client_id, $client_secret) {
+	public static function test_connection($client_id, $client_secret, $baseurl = null) {
 		$test_api_client = new OpenEducationBadgesApi(
 			$client_id,
-			$client_secret
+			$client_secret,
+			$baseurl
 		);
 		$test_api_client->set_store_token([static::class, 'store_token']);
 		$test_api_client->set_retrieve_token(function() {});

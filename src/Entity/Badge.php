@@ -93,6 +93,11 @@ class Badge extends ApiObject {
 		}
 
 		CachedApiWrapper::clear_request($api_client, 'get_qrcodes', [$this->issuer_id, $this->id]);
-		// CachedApiWrapper::clear_request($api_client, 'get_badges', [$this->issuer_id]);
+	}
+
+	public function delete_qrcode($qrcode_id) {
+		$api_client = Utils::get_api_client($this->connection);
+		$api_client->delete_qrcode($this->issuer_id, $this->id, $qrcode_id);
+		CachedApiWrapper::clear_request($api_client, 'get_qrcodes', [$this->issuer_id, $this->id]);
 	}
 }
