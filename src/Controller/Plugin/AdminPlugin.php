@@ -109,6 +109,7 @@ class AdminPlugin {
 				}
 			}
 
+			// handle badge qr codes
 			if ($_GET['page'] == 'oeb_admin' && isset($_GET['badge'])) {
 				if (isset($_GET['action']) && $_GET['action'] == 'qr' && !empty($_POST)) {
 					if (wp_verify_nonce($_REQUEST['_wpnonce'], 'oeb-edit-qr-'.$_GET['badge'])) {
@@ -166,12 +167,13 @@ class AdminPlugin {
 
 					Utils::issue_by_badge($_GET['badge'], $emails);
 
-					wp_redirect(add_query_arg([
-							'page'=> $_GET['page'],
-						],
-						admin_url('admin.php')
-					));
-					exit();
+					// wp_redirect(add_query_arg([
+					// 		'page'=> $_GET['page'],
+					// 		'badge' => $_GET['badge'],
+					// 	],
+					// 	admin_url('admin.php')
+					// ));
+					// exit();
 				}
 			}
 

@@ -11,6 +11,18 @@
 
 	<div class="oeb-issue-badge postbox" style="padding: 0 12px 12px;">
 
+		<?php if (!empty($_POST)): ?>
+
+			<h2>Badge erfolgreich vergeben.</h2>
+			<p><a class="button" href="<?= add_query_arg([
+					'page'=> $_GET['page'],
+					'badge' => $_GET['badge'],
+				],
+				admin_url('admin.php')
+			); ?>">Weitere vergeben</a></p>
+
+		<?php else: ?>
+
 		<form
 			method="post"
 			name="issue"
@@ -61,5 +73,7 @@
 
 			<p><input class="button" type="submit" name="save" value="Badge vergeben"></p>
 		</form>
+
+		<?php endif; ?>
 	</div>
 </div>
