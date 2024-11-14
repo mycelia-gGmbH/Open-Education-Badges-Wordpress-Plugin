@@ -2,12 +2,15 @@
 
 namespace DisruptiveElements\OpenEducationBadges\Controller\Plugin;
 
+use chillerlan\QRCode\Output\QRGdImagePNG;
+use chillerlan\QRCode\Output\QROutputInterface;
 Use DisruptiveElements\OpenEducationBadges\Controller\Plugin;
 use DisruptiveElements\OpenEducationBadges\Entity\Badge;
 use DisruptiveElements\OpenEducationBadges\Util\CachedApiWrapper;
 Use DisruptiveElements\OpenEducationBadges\Util\Utils;
 
 Use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
 
 class AdminPlugin {
 
@@ -111,6 +114,8 @@ class AdminPlugin {
 
 			// handle badge qr codes
 			if ($_GET['page'] == 'oeb_admin' && isset($_GET['badge'])) {
+
+				// save qr code
 				if (isset($_GET['action']) && $_GET['action'] == 'qr' && !empty($_POST)) {
 					if (wp_verify_nonce($_REQUEST['_wpnonce'], 'oeb-edit-qr-'.$_GET['badge'])) {
 
@@ -142,6 +147,15 @@ class AdminPlugin {
 						}
 					}
 				}
+
+				// delete assertion
+				if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'assertions' && !empty($_POST)) {
+					if (wp_verify_nonce($_REQUEST['_wpnonce'], 'oeb-delete-assertion-'.$_POST['assertion_id'])) {
+						$badge_id = $_GET['badge'];
+						$badge = Utils::get_badge($badge_id);
+						$badge->retract($_POST['assertion_id']);
+					}
+				}
 			}
 
 			// handle oeb_issue action
@@ -165,7 +179,16 @@ class AdminPlugin {
 						));
 					}
 
-					Utils::issue_by_badge($_GET['badge'], $emails);
+					// Utils::issue_by_badge($_GET['badge'], $emails);
+
+					// $badges = Utils::get_all_badges();
+					// $badge = Utils::array_find($badges, function($badge) use ($badge_id) { return $badge->id == $badge_id; });
+					$badge_id = $_GET['badge'];
+					$badge = Utils::get_badge($badge_id);
+					if (!empty($badge)) {
+						$badge->issue($emails);
+					}
+
 
 					// wp_redirect(add_query_arg([
 					// 		'page'=> $_GET['page'],
@@ -195,13 +218,13 @@ class AdminPlugin {
 
 	public static function admin_menu() {
 		$slug = 'oeb_admin';
-		add_menu_page('Open Education Badges', 'Open Education Badges', 'manage_options', $slug, [static::class, 'page_oeb_admin']);
-		add_submenu_page($slug, 'OEB Einstellungen', 'Einstellungen', 'manage_options', 'oeb_settings', [static::class, 'page_oeb_settings']);
-		add_submenu_page($slug, 'OEB Verbindungen', 'Verbindungen', 'manage_options', 'oeb_connections', [static::class, 'page_oeb_connections']);
+		add_menu_page('Open Education Badges', 'Open Education Badges', 'oeb_issue', $slug, [static::class, 'page_oeb_admin']);
+		add_submenu_page($slug, 'OEB Einstellungen', 'Einstellungen', 'oeb_manage', 'oeb_settings', [static::class, 'page_oeb_settings']);
+		add_submenu_page($slug, 'OEB Verbindungen', 'Verbindungen', 'oeb_manage', 'oeb_connections', [static::class, 'page_oeb_connections']);
 		
 		$oeb_connections = get_option('oeb_connections');
 		if (!empty($oeb_connections)) {
-			add_submenu_page($slug, 'OEB Badge vergeben', 'Badge vergeben', 'manage_options', 'oeb_issue', [static::class, 'page_oeb_issue']);
+			add_submenu_page($slug, 'OEB Badge vergeben', 'Badge vergeben', 'oeb_issue', 'oeb_issue', [static::class, 'page_oeb_issue']);
 		}
 	}
 
@@ -243,7 +266,12 @@ class AdminPlugin {
 
 				include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_admin_qr_edit.php');
 			} else if ($_GET['action'] == 'qr-show') {
-				$qrcode_image = (new QRCode())->render($oeb_qr_code->url);
+				$options = new QROptions();
+				$options->connectPaths = true;
+				$qrcode_svg = (new QRCode($options))->render($oeb_qr_code->url);
+				$options->outputType = QROutputInterface::GDIMAGE_PNG;
+				$options->scale = 10;
+				$qrcode_png = (new QRCode($options))->render($oeb_qr_code->url);
 				include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_admin_qr_show.php');
 			}
 		} else {

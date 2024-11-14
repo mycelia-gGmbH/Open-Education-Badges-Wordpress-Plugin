@@ -30,7 +30,10 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 				<img width="100" src="<?= $badge->image ?>">
 				<p><?= $badge->name ?></p>
 
-				<img src="<?= $qrcode_image ?>" width="600">
+				<img src="<?= $qrcode_svg ?>" width="600">
+
+				<br><a class="button" download="<?= sanitize_title($badge->name) ?>_qr.svg" href="<?= $qrcode_svg ?>">Download SVG</a>
+				<a class="button" download="<?= sanitize_title($badge->name) ?>_qr.png" href="<?= $qrcode_png ?>">Download PNG</a>
 
 			</div>
 

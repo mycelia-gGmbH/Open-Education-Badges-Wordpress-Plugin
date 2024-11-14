@@ -104,8 +104,10 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 						<h3>Kriterien</h3>
 						<p><?= nl2br($badge->api_data['criteriaNarrative']) ?></p>
 						<?php if (!empty($badge->api_data['criteriaUrl'])): ?>
-							<p><s>Url:</s
-							trong> <a target="_blank" href="<?= $badge->api_data['criteriaUrl'] ?>"><?= $badge->api_data['criteriaUrl'] ?></a></p>
+							<p>
+								<strong>Url:</strong>
+								<a target="_blank" href="<?= $badge->api_data['criteriaUrl'] ?>"><?= $badge->api_data['criteriaUrl'] ?></a>
+							</p>
 						<?php endif; ?>
 						<?php if (!empty($badge->api_data['alignment'])): ?>
 							<h3>Alignment</h3>
@@ -202,6 +204,7 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 									<tr>
 										<th>ID</th>
 										<th>Vergeben am</th>
+										<th>Aktionen</th>
 									<tr>
 								</thead>
 								<tbody>
@@ -209,6 +212,14 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 								<tr<?= ($i % 2 != 0) ? ' class="alternate"' : '' ?>>
 									<td><?= $assertion->recipient ?></td>
 									<td><?= $assertion->created->format('d.m.Y') ?></td>
+									<td>
+										<form action="" method="post" onsubmit="return confirm('Möchten Sie diesen Badge wirklich zurücknehmen?')">
+											<?php wp_nonce_field('oeb-delete-assertion-'.$assertion->id); ?>
+											<input type="hidden" name="assertion_id" value="<?= $assertion->id ?>">
+											<input type="hidden" name="action" value="assertions">
+											<button class="button" type="submit" name="delete">Zurücknehmen</button>
+										</form>
+									</td>
 								<tr>
 							<?php endforeach; ?>
 								</tbody>

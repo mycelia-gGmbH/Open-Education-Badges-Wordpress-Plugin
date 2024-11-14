@@ -42,7 +42,7 @@
 					</tr>
 
 					<tr class="oeb-issue-badge__users">
-						<th><label for="oeb_users">Wordpress-Benutzer</label></th>
+						<th><label for="oeb_users">Registrierte Benutzer</label></th>
 						<td>
 							<select name="oeb_users[]" multiple id="oeb_users">
 								<?php foreach($users as $user): ?>
@@ -57,7 +57,7 @@
 											$username .= ' - bereits erhalten';
 										}
 									?>
-									<option <?= $state ?> value="<?= $user->ID ?>"><?= $username ?></option>
+									<option value="<?= $user->ID ?>"><?= $username ?></option>
 								<?php endforeach; ?>
 							</select>
 						</td>

@@ -101,6 +101,11 @@ class Utils {
 		return $badges;
 	}
 
+	public static function get_badge($badge_id) {
+		$badges = Utils::get_all_badges();
+		return Utils::array_find($badges, function($badge) use ($badge_id) { return $badge->id == $badge_id; });
+	}
+
 	public static function issue_by_badge($badge_id, $emails) {
 		$oeb_connections = get_option('oeb_connections');
 		foreach($oeb_connections as $connection) {
@@ -129,6 +134,10 @@ class Utils {
 			$assertions = array_merge($assertions, $api_client->get_assertions_by_badge($badge_id));
 		}
 		return $assertions;
+	}
+
+	public static function delete_assertion($assertion_id) {
+		
 	}
 
 	public static function list_badges_by_email($email) {

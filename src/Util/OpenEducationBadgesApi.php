@@ -173,7 +173,7 @@ class OpenEducationBadgesApi {
 
 			$url .= '?'.$payload;
 
-		} else if ($method === 'post' || $method == 'put') {
+		} else if ($method === 'post' || $method == 'put' || $method == 'delete') {
 
 			if (!empty($params)) {
 				if ($is_auth) {
@@ -185,16 +185,15 @@ class OpenEducationBadgesApi {
 			}
 			if ($method == 'post') {
 				curl_setopt($ch, CURLOPT_POST, True);
-			} else {
+			}
+			if ($method == 'put') {
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+			}
+			if ($method === 'delete') {
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 			}
 
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-
-		} else if ($method === 'delete') {
-
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-
 		} else {
 			return false;
 		}
@@ -239,8 +238,6 @@ class OpenEducationBadgesApi {
 
 		if ($http_code >= 200 && $http_code <= 300) {
 
-			return $response;
-
 		} else {
 			$this->log(
 				'API Error: ' . var_export(
@@ -254,7 +251,8 @@ class OpenEducationBadgesApi {
 			);
 		}
 
-		return false;
+		// return false;
+		return $response;
 	}
 	private function get($endpoint, $params) {
 		return $this->api_request('get', $endpoint, $params);
@@ -335,31 +333,53 @@ class OpenEducationBadgesApi {
 
 	public function issue_badge($issuer, $badge, $recipient) {
 
-		$response = $this->post("v1/issuer/issuers/$issuer/badges/$badge/assertions", [
-			"badge_class" => $badge,
-			"create_notification" => true,
-			"evidence_items" => [],
-			"issuer" => $issuer,
-			"narrative" => "",
-			"recipient_identifier" => $recipient,
-			"recipient_type" => "email"
+		// $response = $this->post("v1/issuer/issuers/$issuer/badges/$badge/assertions", [
+		// 	"badge_class" => $badge,
+		// 	"create_notification" => true,
+		// 	"evidence_items" => [],
+		// 	"issuer" => $issuer,
+		// 	"narrative" => "",
+		// 	"recipient_identifier" => $recipient,
+		// 	"recipient_type" => "email"
+		// ]);
+
+		// if (!empty($response)) {
+		// 	$this->log(
+		// 		'Issued Badge: ' . var_export(
+		// 			[
+		// 				'issuer' => $issuer,
+		// 				'badge' => $badge,
+		// 				'recipient' => $recipient
+		// 			],
+		// 			true
+		// 		),
+		// 		'info'
+		// 	);
+		// }
+		// return $response;
+
+
+		$response = $this->post("v2/issuers/$issuer/assertions", [
+			"badgeclass" => $badge,
+			"recipient" => [
+				"identity" => $recipient
+			]
 		]);
 
-		if (!empty($response)) {
-			$this->log(
-				'Issued Badge: ' . var_export(
-					[
-						'issuer' => $issuer,
-						'badge' => $badge,
-						'recipient' => $recipient
-					],
-					true
-				),
-				'info'
-			);
+		if ($response['status']['success']) {
+			return $response['result'];
 		}
+		return false;
+	}
 
-		return $response;
+	public function retract_badge($assertion_id) {
+		$response = $this->delete("v2/assertions/$assertion_id", [
+			"revocation_reason" => "Manually revoked by Issuer"
+		]);
+		if ($response['status']['success']) {
+			return $response['result'];
+		}
+		return false;
 	}
 
 	public function get_assertions($issuer) {

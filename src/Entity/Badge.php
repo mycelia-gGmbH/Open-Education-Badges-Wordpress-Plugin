@@ -49,9 +49,24 @@ class Badge extends ApiObject {
 
 	public function get_assertions() {
 		$api_client = Utils::get_api_client($this->connection);
-		$response = $api_client->get_assertions_by_badge($this->id);
+		// $response = $api_client->get_assertions_by_badge($this->id);
+		$response = CachedApiWrapper::api_request($api_client, 'get_assertions_by_badge', [$this->id]);
 		$assertions = array_map(function($r) { return new Assertion($this->connection, $r, $this->id, $this->issuer_id); }, $response);
 		return $assertions;
+	}
+
+	public function issue($emails) {
+		$api_client = Utils::get_api_client($this->connection);
+		foreach($emails as $email) {
+			$api_client->issue_badge($this->issuer_id, $this->id, $email);
+		}
+		CachedApiWrapper::clear_request($api_client, 'get_assertions_by_badge', [$this->id]);
+	}
+
+	public function retract($assertion_id) {
+		$api_client = Utils::get_api_client($this->connection);
+		$api_client->retract_badge($assertion_id);
+		CachedApiWrapper::clear_request($api_client, 'get_assertions_by_badge', [$this->id]);
 	}
 
 	public function get_qrcodes() {

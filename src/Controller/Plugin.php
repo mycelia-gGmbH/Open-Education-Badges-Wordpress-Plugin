@@ -15,9 +15,34 @@ class Plugin {
 
 	public static function register_hooks() {
 
-		if (!wp_roles()->is_role('oeb_issue')) {
-			add_role('oeb_issue', 'OpenEducationBadges: Badge vergeben', []);
-		}
+		remove_role('oeb_manage');
+		add_role(
+			'oeb_manage',
+			'OpenEducationBadges: Manager',
+			[
+				'oeb_manage' => true,
+				'oeb_issue' => true,
+				'read' => true,
+            'level_0' => true
+			]
+	  	);
+		remove_role('oeb_issue');
+		add_role(
+			'oeb_issue',
+			'OpenEducationBadges: Badge vergeben',
+			[
+				'oeb_issue' => true,
+				'read' => true,
+            'level_0' => true,
+			]
+	  	);
+
+		$admin_role = get_role('administrator');
+		$admin_role->add_cap('oeb_issue', true);
+		$admin_role->add_cap('oeb_manage', true);
+
+		// $user = wp_get_current_user();
+		// var_export($user->allcaps); die();
 
 		AdminPlugin::register_hooks();
 		BlocksPlugin::register_hooks();
