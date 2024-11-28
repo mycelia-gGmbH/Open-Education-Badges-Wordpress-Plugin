@@ -71,6 +71,8 @@ class OpenEducationBadgesApi {
 			}
 		}
 
+		$msg = preg_replace('/"data:image\/png;base64,[^"]+"/', '"data:image\/png;base64,image-data-removed"', $msg);
+
 		if ($this->logfunc) {
 			call_user_func($this->logfunc, $this, $msg, $level);
 		} else {
