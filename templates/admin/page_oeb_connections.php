@@ -8,14 +8,17 @@
 	);
 ?>
 
-<div class="wrap">
+<div class="wrap oeb-wrap">
 	<h1 class="wp-heading-inline">
 		Verbindungen <!-- <span class="title-count theme-count">2</span>-->
 	</h1>
 
 	<a
 		href="<?= $url_create ?>"
-		class="hide-if-no-js page-title-action">Verbindung hinzufügen</a>
+		style="margin-top: 8px;"
+		class="hide-if-no-js page-title-action button">Verbindung hinzufügen</a>
+		<br>
+		<br>
 	<hr class="wp-header-end" />
 
 	<?php if (!empty($oeb_connections)): ?>
@@ -28,7 +31,7 @@
 			</tr>
 		</thead>
 
-		<tbody id="the-list">
+		<tbody>
 			<?php foreach($oeb_connections as $connection): ?>
 			<tr class="active">
 				<td class="plugin-title column-primary"><strong><?= $connection['name'] ?></strong>

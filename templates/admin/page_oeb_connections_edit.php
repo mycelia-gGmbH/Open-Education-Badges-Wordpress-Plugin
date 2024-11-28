@@ -1,4 +1,4 @@
-<div class="wrap">
+<div class="wrap oeb-wrap">
 	<h1 class="wp-heading-inline">
 		Verbindung anlegen
 	</h1>
@@ -67,6 +67,7 @@
 					/>
 				</td>
 			</tr>
+			<?php if (WP_DEBUG): ?>
 			<tr class="form-field form-required">
 				<th scope="row">
 					<label for="oeb_connection_clientsecret">Server Base URL</label>
@@ -82,15 +83,18 @@
 					/>
 				</td>
 			</tr>
+			<?php endif; ?>
 		</table>
 
 		<?php if (!empty($oeb_issuers)): ?>
 			<h2>Aktive Institutionen</h2>
 			<table class="wp-list-table widefat" style="max-width: 500px;">
-				<tr>
-					<th style="width:32px;">Aktiv</th>
-					<th>Institution</th>
-				</tr>
+				<thead>
+					<tr>
+						<th style="width:32px;">Aktiv</th>
+						<th>Institution</th>
+					</tr>
+				</thead>
 				<?php foreach($oeb_issuers as $idx => $issuer): ?>
 				<tr>
 					<td>

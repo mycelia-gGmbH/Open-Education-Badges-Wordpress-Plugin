@@ -32,7 +32,7 @@ class BlocksPlugin {
 			);
 		}, 10, 2);
 
-		self::register_block('issue-badge');
+		// self::register_block('issue-badge');
 		self::register_block('list-user-badges');
 
 		add_filter('request', [static::class, 'filter_request']);

@@ -11,7 +11,7 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 	);
 ?>
 
-<div class="wrap">
+<div class="wrap oeb-wrap">
 	<h1 class="wp-heading-inline">
 		Open Education Badges
 	</h1>
@@ -118,7 +118,7 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 
 						<?php if (!empty($badge->competencies)): ?>
 							<h3>Kompetenzen</h3>
-							<table class="widefat">
+							<table class="widefat oeb-badgedetails__competencies">
 							<?php foreach($badge->competencies as $competency): ?>
 								<tr>
 									<td>
@@ -168,7 +168,7 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 											admin_url('admin.php')
 										);
 										?>
-										<a class="button" href="<?= $url_edit_qr ?>">Bearbeiten</a>
+										<a class="button button-xs button-secondary" href="<?= $url_edit_qr ?>">Bearbeiten</a>
 										<?php
 										$url_show_qr =  add_query_arg([
 												'badge' => $badge->id,
@@ -179,7 +179,7 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 											admin_url('admin.php')
 										);
 										?>
-										<a class="button" href="<?= $url_show_qr ?>">Anzeigen</a>
+										<a class="button button-xs button-secondary" href="<?= $url_show_qr ?>">Anzeigen</a>
 									</td>
 								</tr>
 							<?php endforeach; ?>
@@ -217,7 +217,7 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 											<?php wp_nonce_field('oeb-delete-assertion-'.$assertion->id); ?>
 											<input type="hidden" name="assertion_id" value="<?= $assertion->id ?>">
 											<input type="hidden" name="action" value="assertions">
-											<button class="button" type="submit" name="delete">Zurücknehmen</button>
+											<button class="button button-xs button-secondary" type="submit" name="delete">Zurücknehmen</button>
 										</form>
 									</td>
 								<tr>

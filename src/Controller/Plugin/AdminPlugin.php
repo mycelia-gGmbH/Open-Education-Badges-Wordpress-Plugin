@@ -20,6 +20,7 @@ class AdminPlugin {
 
 		add_action('admin_init', [static::class, 'admin_init']);
 		add_action('admin_menu', [static::class, 'admin_menu']);
+		add_filter('submenu_file', [static::class, 'submenu_file']);
 	}
 
 	public static function admin_init() {
@@ -277,6 +278,26 @@ class AdminPlugin {
 		} else {
 			include realpath(Plugin::PLUGIN_DIR . 'templates/admin/page_oeb_admin.php');
 		}
+	}
+
+	static function submenu_file($submenu_file) {
+		global $plugin_page;
+
+		$hidden_submenus = [
+			'oeb_issue',
+		];
+
+		// Select another submenu item to highlight (optional).
+		if ($plugin_page && isset( $hidden_submenus[ $plugin_page ] ) ) {
+			$submenu_file = 'oeb_admin';
+		}
+
+		// Hide the submenu.
+		foreach ($hidden_submenus as $submenu) {
+			remove_submenu_page('oeb_admin', $submenu);
+		}
+
+		return $submenu_file;
 	}
 
 	public static function page_oeb_settings() {

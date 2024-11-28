@@ -11,7 +11,7 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 	);
 ?>
 
-<div class="wrap">
+<div class="wrap oeb-wrap">
 	<h1 class="wp-heading-inline">
 		Open Education Badges
 	</h1>

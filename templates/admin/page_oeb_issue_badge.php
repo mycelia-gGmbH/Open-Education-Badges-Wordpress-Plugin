@@ -2,7 +2,7 @@
 	$url_page = '?page='. $oeb_page;
 ?>
 
-<div class="wrap">
+<div class="wrap oeb-wrap">
 	<h1 class="wp-heading-inline">
 		Badge vergeben
 	</h1>

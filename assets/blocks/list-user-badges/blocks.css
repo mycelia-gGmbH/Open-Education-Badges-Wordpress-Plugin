@@ -1,71 +1,100 @@
-/**
-* Minimal Style for List of User Badges
-*/
-
 .oeb-badgelist {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: 24px;
+	--card-border-color: #aaa;
+	--item-gap: 6px;
+}
+.oeb-badgelist * {
+	box-sizing: border-box;
+}
+.oeb-badgelist__wrap {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+	box-sizing: border-box;
+	margin-left: calc(var(--item-gap) * -1);
+	margin-right: calc(var(--item-gap) * -1);
 }
 
 .oeb-badgelist__item {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 12px;
-}
-
-.oeb-badgelist__image {
-	flex-shrink: 0;
-}
-
-.oeb-badgelist__title {
-	text-align: center;
 	max-width: 200px;
+	padding: var(--item-gap) var(--item-gap);
+}
+
+.oeb-badgelist--layout33 .oeb-badgelist__item {
+	width: 33.333%;
+}
+.oeb-badgelist--layout25 .oeb-badgelist__item {
+	width: 25%;
+}
+.oeb-badgelist--layout50 .oeb-badgelist__item {
+	width: 50%;
+}
+.oeb-badgelist--layout100 .oeb-badgelist__item {
+	width: 100%;
 }
 
 @media (max-width: 992px) {
-	.oeb-badgelist {
-		grid-template-columns: repeat(3, 1fr);
+	.oeb-badgelist--layout33 .oeb-badgelist__item {
+		width: 50%;
+	}
+	.oeb-badgelist--layout25 .oeb-badgelist__item {
+		width: 33%;
 	}
 }
-
-@media (max-width: 768px) {
-	.oeb-badgelist {
-		grid-template-columns: repeat(2, 1fr);
-	}
-}
-
 @media (max-width: 576px) {
-	.oeb-badgelist {
-		grid-template-columns: 1fr;
-	}
-
-	.oeb-badgelist__item {
-		flex-direction: row;
-	}
-
-	.oeb-badgelist__title {
-		text-align: left;
+	.oeb-badgelist .oeb-badgelist__item {
+		width: 100%;
 	}
 }
 
-/**
-* Minimal Style for Sidebar use
-*/
-.sidebar-inner-wrap .oeb-badgelist {
-	grid-template-columns: repeat(2, 1fr);
-	gap: 8px;
-}
-.sidebar-inner-wrap .oeb-badgelist__image {
-	flex-shrink: 1;
-}
-.sidebar-inner-wrap .oeb-badgelist__title {
-	display: none;
+
+.oeb-badgelist__item a {
+	text-decoration: none;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 }
 
-@media (max-width: 768px) {
-	.sidebar-inner-wrap .oeb-badgelist {
-		grid-template-columns: 1fr;
-	}
+.oeb-badgelist--layout-card a {
+	border: 1px solid var(--card-border-color);
+	padding: 4px;
+	display: flex;
+	flex-direction: row;
+	gap: 4%;
+}
+.oeb-badgelist__image {
+	flex: 1;
+}
+.oeb-badgelist__image img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.oeb-badgelist--layout-card .oeb-badgelist__item {
+	max-width: 100%;
+}
+
+.oeb-badgelist--layout-card .oeb-badgelist__image {
+	flex: 1;
+	padding: 2%;
+}
+
+.oeb-badgelist__content {
+	text-align: center;
+}
+.oeb-badgelist--layout-card .oeb-badgelist__content {
+	height: 100%;
+	flex: 3;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	text-align: left;
+}
+
+.oeb-badgelist__title {
+	font-weight: 600;
+}
+.oeb-badgelist__desc {
+	font-size: 0.8em;
+	line-height: 1.2em;
 }

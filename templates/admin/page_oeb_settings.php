@@ -6,7 +6,7 @@
 	}
 ?>
 
-<div class="wrap">
+<div class="wrap oeb-wrap">
 	<h1 class="wp-heading-inline">
 		Einstellungen
 	</h1>
