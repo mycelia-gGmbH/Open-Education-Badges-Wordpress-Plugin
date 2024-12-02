@@ -54,10 +54,13 @@
 								<?php foreach($users as $user): ?>
 									<?php
 										$state = in_array($user->user_email, $oeb_badge_recipients) ? 'disabled':'';
-
 										$username = $user->user_email;
 										if (!empty($user->user_firstname) || !empty($user->user_lastname)) {
 											$username = $user->user_firstname . ' ' . $user->user_lastname . ' (' . $user->user_email . ')';
+										} else if (!empty($user->display_name)) {
+											$username = $user->display_name . ' (' . $user->user_email . ')';
+										} else if (!empty($user->user_login)) {
+											$username = $user->user_login . ' (' . $user->user_email . ')';
 										}
 										if ($state == 'disabled') {
 											$username .= ' - bereits erhalten';

@@ -13,6 +13,14 @@
 		edit: function(props) {
 			return html`<div style="${{'border': '1px solid black', 'padding': '12px 24px'}}">
 				<p><strong style="${{'font-size': '1.4em'}}">Open Education Badges List User Badges</strong></p>
+				<${wp.blockEditor.RichText}
+					tagName="p"
+					value=${props.attributes.headline}
+					onChange=${headline => props.setAttributes({headline})}
+					placeholder="Überschrift"
+					withoutInteractiveFormatting
+				/>
+				
 				<${wp.components.SelectControl} label="Anzeigen"
 					value="${props.attributes.display}"
 					onChange="${display => props.setAttributes({display})}"
@@ -36,6 +44,9 @@
 			</div>`;
 		},
 		attributes: {
+			headline: {
+				type: 'string'
+			},
 			display: {
 				type: 'string'
 			},

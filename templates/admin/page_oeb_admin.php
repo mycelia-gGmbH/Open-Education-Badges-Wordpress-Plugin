@@ -229,8 +229,10 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 						<?php if (0): ?>
 							<pre><?= var_export($badge, true) ?></pre>
 						<?php endif; ?>
-					</ul>
+					</div>
 				</div>
+				<a class="button" href="<?= $url_page ?>">Zurück zur Übersicht</a>
+				<a class="button" href="<?= $url_create_assertion ?>">Badge vergeben</a>
 				<?php endif; ?>
 			<?php endif; ?>
 

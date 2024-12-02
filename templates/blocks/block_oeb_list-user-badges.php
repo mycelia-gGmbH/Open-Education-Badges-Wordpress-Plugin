@@ -18,6 +18,9 @@ if (!empty($user)):
 ?>
 
 <div class="oeb-badgelist oeb-badgelist--layout<?= $layout ?><?= in_array('shortdesc', $display_fields) ? ' oeb-badgelist--layout-card' : '' ?>">
+	<?php if (!empty($block->attributes['headline'])): ?>
+		<p><?= $block->attributes['headline'] ?></p>
+	<?php endif; ?>
 	<div class="oeb-badgelist__wrap">
 	<?php foreach($badges as $badge): ?>
 		<div class="oeb-badgelist__item">

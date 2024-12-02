@@ -50,7 +50,7 @@ class BlocksPlugin {
 		$asset_path = realpath(Plugin::PLUGIN_DIR . '/assets/blocks/' . $block_name);
 		wp_register_script(
 			"oeb-$block_name-editor",
-			"$asset_url/editor.js",
+			"$asset_url/editor.js?ver=1.0.1",
 			[
 				'oeb-blocks-htm',
 				'wp-block-editor',
@@ -62,7 +62,7 @@ class BlocksPlugin {
 			filemtime("$asset_path/editor.js")
 		);
 
-		wp_enqueue_style("oeb-$block_name-style", "$asset_url/blocks.css");
+		wp_enqueue_style("oeb-$block_name-style", "$asset_url/blocks.css?ver=1.0.1");
 	}
 
 	public static function render_block($attributes, $content, $block) {
