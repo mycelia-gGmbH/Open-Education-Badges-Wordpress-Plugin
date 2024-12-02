@@ -7,7 +7,13 @@
 		Badge vergeben
 	</h1>
 	<br><br>
-	<div><a class="button" href="<?= $url_page ?>">Zurück zur Badge-Auswahl</a></div>
+	<div><a class="button" href="<?= add_query_arg([
+					'page'=> 'oeb_admin',
+					'badge' => $_GET['badge'],
+				],
+				admin_url('admin.php')
+			); ?>">Zurück zu den Badge-Details</a></div>
+	<br>
 
 	<div class="oeb-issue-badge postbox" style="padding: 0 12px 12px;">
 

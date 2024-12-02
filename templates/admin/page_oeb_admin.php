@@ -213,12 +213,13 @@ use DisruptiveElements\OpenEducationBadges\Util\Utils;
 									<td><?= $assertion->recipient ?></td>
 									<td><?= $assertion->created->format('d.m.Y') ?></td>
 									<td>
-										<form action="" method="post" onsubmit="return confirm('Möchten Sie diesen Badge wirklich zurücknehmen?')">
+										<form action="" method="post" onsubmit="return confirm('Möchten Sie diesen Badge wirklich zurücknehmen?')" style="margin-bottom:6px;">
 											<?php wp_nonce_field('oeb-delete-assertion-'.$assertion->id); ?>
 											<input type="hidden" name="assertion_id" value="<?= $assertion->id ?>">
 											<input type="hidden" name="action" value="assertions">
 											<button class="button button-xs button-secondary" type="submit" name="delete">Zurücknehmen</button>
 										</form>
+										<a class="button button-xs button-secondary" href="<?= $assertion->api_data['openBadgeId'] ?>" target="_blank">Link</a>
 									</td>
 								<tr>
 							<?php endforeach; ?>
